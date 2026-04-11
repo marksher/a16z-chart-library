@@ -1,24 +1,31 @@
 #!/usr/bin/env python3
 """
-Generate a single static HTML browser for the current source/ and graphs/ trees.
+Generate a single static HTML browser at graphs/browse.html for the current
+source/ and graphs/ trees.
 """
 
 from __future__ import annotations
 
 import json
+import os
 from datetime import datetime, timezone
 from pathlib import Path
 
 
-ROOT = Path(__file__).resolve().parent
-OUTPUT_FILE = ROOT / "browse.html"
+SCRIPT_DIR = Path(__file__).resolve().parent
+REPO_ROOT = SCRIPT_DIR.parent
+OUTPUT_FILE = REPO_ROOT / "graphs" / "browse.html"
 ROOT_NAMES = ("source", "graphs")
 IMAGE_SUFFIXES = {".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg"}
 TEXT_SUFFIXES = {".json", ".txt", ".md"}
 
 
-def rel_path(path: Path) -> str:
-    return path.relative_to(ROOT).as_posix()
+def tree_path(path: Path) -> str:
+    return path.relative_to(REPO_ROOT).as_posix()
+
+
+def browse_href(path: Path) -> str:
+    return os.path.relpath(path, OUTPUT_FILE.parent).replace(os.sep, "/")
 
 
 def file_sort_key(path: Path) -> tuple[int, str]:
@@ -34,7 +41,8 @@ def build_item(path: Path) -> dict:
     suffix = path.suffix.lower()
     item = {
         "name": path.name,
-        "path": rel_path(path),
+        "path": tree_path(path),
+        "href": browse_href(path),
         "kind": "file",
     }
     if suffix in IMAGE_SUFFIXES:
@@ -51,7 +59,7 @@ def build_tree(path: Path) -> dict:
     children = sorted([child for child in path.iterdir() if child.is_dir()], key=lambda p: p.name.lower())
     node = {
         "name": path.name,
-        "path": rel_path(path),
+        "path": tree_path(path),
     }
     if not children:
         items = [build_item(file_path) for file_path in sorted(path.iterdir(), key=file_sort_key) if file_path.is_file()]
@@ -71,7 +79,7 @@ def build_tree(path: Path) -> dict:
 def build_data() -> dict:
     roots = []
     for name in ROOT_NAMES:
-        root_path = ROOT / name
+        root_path = REPO_ROOT / name
         if root_path.exists():
             roots.append(build_tree(root_path))
     return {
@@ -333,18 +341,24 @@ def render_html(data: dict) -> str:
       min-height: 68vh;
       overflow: hidden;
       display: flex;
-      align-items: stretch;
+      align-items: center;
       justify-content: center;
     }}
-    .stage img,
     .stage iframe,
     .stage pre,
     .stage .placeholder {{
       width: 100%;
       min-height: 68vh;
+      align-self: stretch;
     }}
     .stage img {{
-      object-fit: contain;
+      width: auto;
+      height: auto;
+      min-height: 0;
+      max-width: 100%;
+      max-height: 600px;
+      display: block;
+      align-self: center;
       background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(244,241,232,0.9));
     }}
     .stage iframe {{
@@ -542,7 +556,7 @@ def render_html(data: dict) -> str:
 
       if (item.kind === "image") {{
         const img = document.createElement("img");
-        img.src = item.path;
+        img.src = item.href;
         img.alt = item.name;
         stageEl.appendChild(img);
         return;
@@ -550,7 +564,7 @@ def render_html(data: dict) -> str:
 
       if (item.kind === "html") {{
         const iframe = document.createElement("iframe");
-        iframe.src = item.path;
+        iframe.src = item.href;
         iframe.loading = "lazy";
         stageEl.appendChild(iframe);
         return;
@@ -615,10 +629,10 @@ def render_html(data: dict) -> str:
       panelMetaEl.textContent = displayCountLabel("Leaf directory", leaf.item_count, "file");
       dirStatusEl.textContent = `Directory ${{leafIndex + 1}} of ${{leafOrder.length}}`;
       viewerPathEl.textContent = item
-        ? `${{item.name}} · item ${{currentItemIndex + 1}} of ${{Math.max(leaf.items.length, 1)}}`
+        ? `${{item.path}} · item ${{currentItemIndex + 1}} of ${{Math.max(leaf.items.length, 1)}}`
         : "No previewable files";
       viewerLinkEl.innerHTML = item
-        ? `<a href="${{item.path}}" target="_blank" rel="noopener">Open ${{item.name}}</a>`
+        ? `<a href="${{item.href}}" target="_blank" rel="noopener">Open ${{item.name}}</a>`
         : "";
 
       prevDirEl.disabled = leafIndex <= 0;
@@ -705,6 +719,7 @@ def render_html(data: dict) -> str:
 
 
 def main() -> None:
+    OUTPUT_FILE.parent.mkdir(exist_ok=True)
     OUTPUT_FILE.write_text(render_html(build_data()), encoding="utf-8")
     print(f"Wrote {OUTPUT_FILE}")
 

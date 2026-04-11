@@ -21,9 +21,12 @@ from openai import OpenAI
 from PIL import Image
 import io
 
-load_dotenv()
+SCRIPT_DIR = Path(__file__).resolve().parent
+REPO_ROOT = SCRIPT_DIR.parent
 
-GRAPHS_DIR = Path("graphs")
+load_dotenv(REPO_ROOT / ".env")
+
+GRAPHS_DIR = REPO_ROOT / "graphs"
 OTHER_DIR = GRAPHS_DIR / "other"
 MODEL = os.getenv("MODEL", "o4-mini")
 

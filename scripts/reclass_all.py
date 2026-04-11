@@ -6,7 +6,7 @@ Two-tier output structure:
   Pure chart types (top-level):  bar  line  area  pie  scatter  table  map
   Everything else (other_v2/):   combo  infographic  title  screenshot  other
 
-Coordination files (in graphs/):
+Coordination files (in progress/):
   .queue.txt       — master list of all images (written once at start)
   .in_progress.txt — appended as each image starts (lock-protected)
   .done.txt        — appended as each image finishes (lock-protected)
@@ -26,17 +26,21 @@ from openai import OpenAI
 from PIL import Image
 import io
 
-load_dotenv()
+SCRIPT_DIR = Path(__file__).resolve().parent
+REPO_ROOT = SCRIPT_DIR.parent
+
+load_dotenv(REPO_ROOT / ".env")
 
 # ── Config ────────────────────────────────────────────────────────────────────
-GRAPHS_DIR   = Path("graphs")
+GRAPHS_DIR   = REPO_ROOT / "graphs"
+PROGRESS_DIR = REPO_ROOT / "progress"
 OTHER_V2_DIR = GRAPHS_DIR / "other_v2"
 MODEL        = os.getenv("MODEL", "o4-mini")
 NUM_WORKERS  = 15
 
-QUEUE_FILE       = GRAPHS_DIR / ".queue.txt"
-IN_PROGRESS_FILE = GRAPHS_DIR / ".in_progress.txt"
-DONE_FILE        = GRAPHS_DIR / ".done.txt"
+QUEUE_FILE       = PROGRESS_DIR / ".queue.txt"
+IN_PROGRESS_FILE = PROGRESS_DIR / ".in_progress.txt"
+DONE_FILE        = PROGRESS_DIR / ".done.txt"
 
 # Pure chart type folders (top-level)
 CHART_TYPES = {"bar", "line", "area", "pie", "scatter", "table", "map"}
@@ -104,6 +108,7 @@ def check_env():
 
 
 def setup_dirs():
+    PROGRESS_DIR.mkdir(exist_ok=True)
     OTHER_V2_DIR.mkdir(exist_ok=True)
     for sub in OTHER_V2_TYPES:
         (OTHER_V2_DIR / sub).mkdir(exist_ok=True)

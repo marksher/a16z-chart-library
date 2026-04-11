@@ -1,9 +1,15 @@
 """Line chart demo — modeled after a16z electricity consumption projections"""
-import sys, os; sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from pathlib import Path
+import sys
+
+SCRIPTS_DIR = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(SCRIPTS_DIR))
+
 import pandas as pd
 import a16z_charts as a16z
 
 a16z.use_theme()
+OUTPUT_FILE = Path(__file__).with_name("line_demo.png")
 
 years = list(range(2015, 2031))
 data = pd.DataFrame({
@@ -25,5 +31,5 @@ fig, ax = a16z.line_chart(
 )
 
 ax.set_ylabel("Index (2025 = 100)", color=a16z.TEXT_MID, fontfamily="sans-serif")
-fig.savefig("examples/line_demo.png")
-print("Saved: examples/line_demo.png")
+fig.savefig(OUTPUT_FILE)
+print(f"Saved: {OUTPUT_FILE.relative_to(SCRIPTS_DIR.parent).as_posix()}")

@@ -3,6 +3,8 @@
 Crawl https://www.a16z.news/ for article images.
 
 - Downloads articles into ./source/YYYY-MM/<slug>/
+- Tracks completed articles in ./progress/completed_articles.txt
+- Tracks restart markers in ./progress/in_progress/
 - Classifies each body image with OpenAI o4-mini vision and saves to ./graphs/<type>/
 
 Reads config from .env:
@@ -35,14 +37,18 @@ import io
 # ---------------------------------------------------------------------------
 # Config
 # ---------------------------------------------------------------------------
-load_dotenv()
+SCRIPT_DIR = Path(__file__).resolve().parent
+REPO_ROOT = SCRIPT_DIR.parent
+
+load_dotenv(REPO_ROOT / ".env")
 
 DOMAIN = "https://www.a16z.news"
 SITEMAP_URL = f"{DOMAIN}/sitemap.xml"
-SOURCE_DIR = Path("source")
-GRAPHS_DIR = Path("graphs")
-COMPLETED_FILE = SOURCE_DIR / "completed_articles.txt"
-IN_PROGRESS_DIR = SOURCE_DIR / "in_progress"
+SOURCE_DIR = REPO_ROOT / "source"
+GRAPHS_DIR = REPO_ROOT / "graphs"
+PROGRESS_DIR = REPO_ROOT / "progress"
+COMPLETED_FILE = PROGRESS_DIR / "completed_articles.txt"
+IN_PROGRESS_DIR = PROGRESS_DIR / "in_progress"
 IMAGE_TYPES = [
     "bar",
     "line",
@@ -64,6 +70,13 @@ DELAY_IMAGE = 0.5     # seconds between image downloads
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (compatible; a16z-chart-library/1.0; +research)"
 }
+
+
+def repo_rel(path: Path) -> str:
+    try:
+        return path.relative_to(REPO_ROOT).as_posix()
+    except ValueError:
+        return str(path)
 
 
 def parse_args():
@@ -109,6 +122,7 @@ def check_env():
 
 def setup_dirs():
     SOURCE_DIR.mkdir(exist_ok=True)
+    PROGRESS_DIR.mkdir(exist_ok=True)
     COMPLETED_FILE.touch(exist_ok=True)
     IN_PROGRESS_DIR.mkdir(exist_ok=True)
     GRAPHS_DIR.mkdir(exist_ok=True)
@@ -343,7 +357,7 @@ def backfill_completed_articles(
         existing_lines = COMPLETED_FILE.read_text(encoding="utf-8").splitlines()
 
     fd, tmp_name = tempfile.mkstemp(
-        dir=str(SOURCE_DIR),
+        dir=str(PROGRESS_DIR),
         prefix=f"{COMPLETED_FILE.name}.",
         suffix=".tmp",
         text=True,
@@ -610,7 +624,7 @@ def main():
     if not args.skip_backfill or args.prepare_manifest_only:
         cleanup_stats = cleanup_stale_in_progress(completed_articles)
     if backfilled:
-        print(f"Backfilled {backfilled} completed article URLs into {COMPLETED_FILE}")
+        print(f"Backfilled {backfilled} completed article URLs into {repo_rel(COMPLETED_FILE)}")
     print(f"Loaded {len(completed_articles)} completed article URLs")
     if legacy_slugs_without_url:
         print(f"Found {len(legacy_slugs_without_url)} legacy cache directories without metadata URLs")
@@ -699,7 +713,7 @@ def main():
             stats["errors"] += 1
             time.sleep(DELAY_ARTICLE)
             continue
-        print(f"  Saved article → source/{pub_date}/{slug}/ ({len(image_urls)} images)")
+        print(f"  Saved article → {repo_rel(article_dir)}/ ({len(image_urls)} images)")
         time.sleep(DELAY_ARTICLE)
 
         stats["scanned"] += 1

@@ -1,39 +1,39 @@
 # Agent Instructions — a16z Chart Library
 
 Two tasks: (1) finish scraping all articles, (2) reclassify every image into a clean
-two-tier folder structure using `reclass_all.py`.
+two-tier folder structure using `scripts/reclass_all.py`.
 
 ---
 
 ## Task 1 — Finish scraping articles
 
 ```bash
-source venv/bin/activate && python scrape.py
+source venv/bin/activate && python scripts/scrape.py
 ```
 
 Crawls every article URL from `https://www.a16z.news/sitemap.xml` (~170 total).
-`source/completed_articles.txt` is the finished-articles manifest: if a canonical
+`progress/completed_articles.txt` is the finished-articles manifest: if a canonical
 article URL is in that file, the article is complete and must be skipped.
 
 During an active scrape, each article also gets an ephemeral
-`source/in_progress/<slug>.json` marker. If the scraper restarts and finds a stale
-in-progress marker for an article that is not in `source/completed_articles.txt`, it
+`progress/in_progress/<slug>.json` marker. If the scraper restarts and finds a stale
+in-progress marker for an article that is not in `progress/completed_articles.txt`, it
 must delete that article's partial `source/YYYY-MM/<slug>/` directory and any partial
 graph files for that slug, then restart the article from scratch.
 
 Single-process runs are safe to resume with:
 
 ```bash
-source venv/bin/activate && python scrape.py
+source venv/bin/activate && python scripts/scrape.py
 ```
 
 For highest-throughput runs, prepare the manifest/cleanup state once and then launch
 15 shards:
 
 ```bash
-source venv/bin/activate && python scrape.py --prepare-manifest-only
+source venv/bin/activate && python scripts/scrape.py --prepare-manifest-only
 for i in $(seq 0 14); do
-  source venv/bin/activate && python scrape.py --shard-index "$i" --shard-count 15 --skip-backfill
+  source venv/bin/activate && python scripts/scrape.py --shard-index "$i" --shard-count 15 --skip-backfill
 done
 ```
 
@@ -46,7 +46,7 @@ deleted on restart.
 ## Task 2 — Reclassify all images into clean two-tier structure
 
 ```bash
-source venv/bin/activate && python reclass_all.py
+source venv/bin/activate && python scripts/reclass_all.py
 ```
 
 Re-examines every image in `graphs/` with o4-mini vision (15 parallel threads).
@@ -82,15 +82,15 @@ graphs/
 ### Coordination files (written during the run)
 | File | Purpose |
 |---|---|
-| `graphs/.queue.txt` | Master list of all images (written once at start) |
-| `graphs/.in_progress.txt` | Appended as each image starts processing |
-| `graphs/.done.txt` | Appended as each image finishes (old, file, new, action) |
+| `progress/.queue.txt` | Master list of all images (written once at start) |
+| `progress/.in_progress.txt` | Appended as each image starts processing |
+| `progress/.done.txt` | Appended as each image finishes (old, file, new, action) |
 
 Run is resumable: if interrupted, delete `.queue.txt` to trigger a fresh scan,
 or leave it and re-run — images already in the right place are a no-op move.
 
 ### Verification
-- `wc -l graphs/.done.txt` should equal total image count when done
+- `wc -l progress/.done.txt` should equal total image count when done
 - `graphs/combo/`, `graphs/infographic/`, `graphs/screenshot/`, `graphs/title/`
   should be empty after the run (all contents moved to `other_v2/`)
 
@@ -99,7 +99,7 @@ or leave it and re-run — images already in the right place are a no-op move.
 ## Task 3 — Commit and push
 
 ```bash
-git add AGENTS.md README.md scrape.py reclass_all.py source/ graphs/
+git add AGENTS.md README.md scripts/ progress/ source/ graphs/
 git commit -m "Scrape all articles and reclassify all images into two-tier structure"
 git push
 ```

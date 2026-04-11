@@ -1,9 +1,15 @@
 """Donut chart demo — modeled after a16z enterprise AI penetration"""
-import sys, os; sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from pathlib import Path
+import sys
+
+SCRIPTS_DIR = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(SCRIPTS_DIR))
+
 import pandas as pd
 import a16z_charts as a16z
 
 a16z.use_theme()
+OUTPUT_FILE = Path(__file__).with_name("pie_demo.png")
 
 data = pd.DataFrame({
     "segment": ["Using AI", "Evaluating", "Not Yet"],
@@ -19,5 +25,5 @@ fig, ax = a16z.donut_chart(
     source="a16z Research",
 )
 
-fig.savefig("examples/pie_demo.png")
-print("Saved: examples/pie_demo.png")
+fig.savefig(OUTPUT_FILE)
+print(f"Saved: {OUTPUT_FILE.relative_to(SCRIPTS_DIR.parent).as_posix()}")

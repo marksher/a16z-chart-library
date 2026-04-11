@@ -1,9 +1,15 @@
 """Area chart demo — modeled after a16z global liquids supply build-up"""
-import sys, os; sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from pathlib import Path
+import sys
+
+SCRIPTS_DIR = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(SCRIPTS_DIR))
+
 import pandas as pd
 import a16z_charts as a16z
 
 a16z.use_theme()
+OUTPUT_FILE = Path(__file__).with_name("area_demo.png")
 
 data = pd.DataFrame({
     "month":       ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"],
@@ -24,5 +30,5 @@ fig, ax = a16z.area_chart(
 )
 
 ax.set_ylabel("Million barrels / day", color=a16z.TEXT_MID, fontfamily="sans-serif")
-fig.savefig("examples/area_demo.png")
-print("Saved: examples/area_demo.png")
+fig.savefig(OUTPUT_FILE)
+print(f"Saved: {OUTPUT_FILE.relative_to(SCRIPTS_DIR.parent).as_posix()}")

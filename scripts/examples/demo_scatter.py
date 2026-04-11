@@ -1,9 +1,15 @@
 """Scatter + dumbbell demo — modeled after a16z streaming prices chart"""
-import sys, os; sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from pathlib import Path
+import sys
+
+SCRIPTS_DIR = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(SCRIPTS_DIR))
+
 import pandas as pd
 import a16z_charts as a16z
 
 a16z.use_theme()
+OUTPUT_FILE = Path(__file__).with_name("scatter_dumbbell_demo.png")
 
 # Dumbbell: streaming service price ranges (ads vs ad-free)
 data = pd.DataFrame({
@@ -25,5 +31,5 @@ fig, ax = a16z.scatter_chart(
 )
 
 ax.set_xlabel("Monthly Price ($)", color=a16z.TEXT_MID, fontfamily="sans-serif")
-fig.savefig("examples/scatter_dumbbell_demo.png")
-print("Saved: examples/scatter_dumbbell_demo.png")
+fig.savefig(OUTPUT_FILE)
+print(f"Saved: {OUTPUT_FILE.relative_to(SCRIPTS_DIR.parent).as_posix()}")

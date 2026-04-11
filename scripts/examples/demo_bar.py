@@ -1,9 +1,15 @@
 """Bar chart demo — modeled after a16z 'Where the Money's Flowing in Enterprise AI'"""
-import sys, os; sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from pathlib import Path
+import sys
+
+SCRIPTS_DIR = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(SCRIPTS_DIR))
+
 import pandas as pd
 import a16z_charts as a16z
 
 a16z.use_theme()
+OUTPUT_FILE = Path(__file__).with_name("bar_demo.png")
 
 data = pd.DataFrame({
     "category": [
@@ -25,5 +31,5 @@ fig, ax = a16z.bar_chart(
 )
 
 ax.set_xlabel("Investment ($B)", color=a16z.TEXT_MID, fontfamily="sans-serif")
-fig.savefig("examples/bar_demo.png")
-print("Saved: examples/bar_demo.png")
+fig.savefig(OUTPUT_FILE)
+print(f"Saved: {OUTPUT_FILE.relative_to(SCRIPTS_DIR.parent).as_posix()}")
