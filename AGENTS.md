@@ -12,8 +12,34 @@ source venv/bin/activate && python scrape.py
 ```
 
 Crawls every article URL from `https://www.a16z.news/sitemap.xml` (~170 total).
-Already-downloaded articles are skipped via `source/completed_articles.txt`.
-Safe to resume — preserves all existing `source/` and `graphs/` content.
+`source/completed_articles.txt` is the finished-articles manifest: if a canonical
+article URL is in that file, the article is complete and must be skipped.
+
+During an active scrape, each article also gets an ephemeral
+`source/in_progress/<slug>.json` marker. If the scraper restarts and finds a stale
+in-progress marker for an article that is not in `source/completed_articles.txt`, it
+must delete that article's partial `source/YYYY-MM/<slug>/` directory and any partial
+graph files for that slug, then restart the article from scratch.
+
+Single-process runs are safe to resume with:
+
+```bash
+source venv/bin/activate && python scrape.py
+```
+
+For highest-throughput runs, prepare the manifest/cleanup state once and then launch
+15 shards:
+
+```bash
+source venv/bin/activate && python scrape.py --prepare-manifest-only
+for i in $(seq 0 14); do
+  source venv/bin/activate && python scrape.py --shard-index "$i" --shard-count 15 --skip-backfill
+done
+```
+
+Do not launch sharded workers without the prep step. Preserve all existing finished
+`source/` and `graphs/` content; only incomplete in-progress article outputs should be
+deleted on restart.
 
 ---
 
@@ -73,7 +99,7 @@ or leave it and re-run — images already in the right place are a no-op move.
 ## Task 3 — Commit and push
 
 ```bash
-git add AGENTS.md scrape.py reclass_all.py source/ graphs/
+git add AGENTS.md README.md scrape.py reclass_all.py source/ graphs/
 git commit -m "Scrape all articles and reclassify all images into two-tier structure"
 git push
 ```

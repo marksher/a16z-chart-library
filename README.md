@@ -1,30 +1,41 @@
 # a16z Chart Library
 
-Crawls [a16z.news](https://www.a16z.news/) for data charts and graphs, downloads the source articles, and organizes images by chart type using OpenAI o4-mini vision classification.
+Crawls [a16z.news](https://www.a16z.news/) for article images, downloads the source articles, and organizes body images by type using OpenAI o4-mini vision classification.
 
 ## What it does
 
-1. **Enumerates** all articles from the site's sitemap (~175 articles)
-2. **Downloads** articles that contain inline images into `source/`
-3. **Classifies** each image with OpenAI o4-mini vision — is it a chart? what kind?
-4. **Saves** charts into `graphs/` organized by type
+1. **Enumerates** all articles from the site's sitemap
+2. **Downloads** article HTML and metadata into `source/YYYY-MM/<slug>/`
+3. **Tracks** completed article URLs in `source/completed_articles.txt` so reruns never re-download finished work
+4. **Tracks** in-progress work in `source/in_progress/` so interrupted articles can be deleted and retried cleanly
+5. **Classifies** each body image with OpenAI o4-mini vision
+6. **Saves** images into `graphs/` organized by type
 
 ## Output structure
 
 ```
 source/
+  completed_articles.txt
+  in_progress/
+    <article-slug>.json  # ephemeral restart marker for incomplete articles
   YYYY-MM/
     <article-slug>/
       index.html        # full article HTML
       metadata.json     # url, publish date, image URLs
 
 graphs/
-  bar/                  # bar charts
-  line/                 # line/area charts
-  pie/                  # pie/donut charts
-  scatter/              # scatter plots
-  table/                # data tables
-  other/                # charts that don't fit the above
+  bar/
+  line/
+  area/
+  pie/
+  scatter/
+  table/
+  combo/
+  map/
+  infographic/
+  title/
+  screenshot/
+  other/
 ```
 
 ## Setup
@@ -48,7 +59,23 @@ MODEL=o4-mini
 python scrape.py
 ```
 
-The script prints progress as it runs and a summary at the end. It resumes safely if interrupted — already-downloaded articles are skipped on re-run.
+The script prints progress as it runs and a summary at the end. `source/completed_articles.txt`
+is the durable finished-manifest, and `source/in_progress/<slug>.json` marks an article that
+started but did not finish. On restart, any article with an in-progress marker and no completed
+manifest entry is deleted and re-scraped from scratch.
+
+Legacy cached articles under `source/unknown/` are preserved and backfilled into the completion
+manifest on startup.
+
+For a 15-way sharded run, prepare the manifest and cleanup state once, then launch workers with
+`--skip-backfill`:
+
+```bash
+python scrape.py --prepare-manifest-only
+python scrape.py --shard-index 0 --shard-count 15 --skip-backfill
+python scrape.py --shard-index 1 --shard-count 15 --skip-backfill
+# ...through shard 14
+```
 
 ## Requirements
 
