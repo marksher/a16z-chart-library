@@ -29,7 +29,7 @@ from .charts.diverging_bar import diverging_bar
 from .charts.line import line
 from .charts.area import area
 from .charts.scatter import scatter
-from .charts.sparkline import sparkline
+from .charts.sparkline import sparkline, sparkline_line, sparkline_area, sparkline_bar
 from .charts.pie import pie
 from .charts.table import table
 from .charts.map import map_chart
@@ -43,6 +43,9 @@ __all__ = [
     "diverging_bar",
     "line",
     "sparkline",
+    "sparkline_line",
+    "sparkline_area",
+    "sparkline_bar",
     "area",
     "scatter",
     "pie",

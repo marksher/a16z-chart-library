@@ -1,0 +1,31 @@
+"""Sparkline area example — care-indeed theme."""
+
+import os
+import sys
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../..", "scripts"))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../a16z-news"))
+
+import sparkline_line as _src
+from chart_library import sparkline_area, save_png, save_svg
+
+OUT = os.path.dirname(__file__)
+
+
+def make_fig():
+    return sparkline_area(
+        _src._df,
+        x="month",
+        y=["GPT-4o", "Claude", "Gemini"],
+        opacity=0.5,
+        theme="care-indeed",
+        width=300,
+        height=80,
+    )
+
+
+if __name__ == "__main__":
+    fig = make_fig()
+    save_png(fig, os.path.join(OUT, "sparkline_area.png"))
+    save_svg(fig, os.path.join(OUT, "sparkline_area.svg"))
+    fig.write_html(os.path.join(OUT, "sparkline_area.html"))
+    print("sparkline_area.png + sparkline_area.svg written")

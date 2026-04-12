@@ -23,7 +23,9 @@ import pie as pie_ex
 import table as table_ex
 import map as map_ex
 import diverging_bar as diverging_bar_ex
-import sparkline as sparkline_ex
+import sparkline_line as sparkline_line_ex
+import sparkline_area as sparkline_area_ex
+import sparkline_bar as sparkline_bar_ex
 
 # ── Chart registry: (display name, figure, png, svg) ─────────────────────────
 CHARTS = [
@@ -34,8 +36,10 @@ CHARTS = [
     ("Pie",           pie_ex.make_fig(),            "pie.png",            "pie.svg"),
     ("Table",         table_ex.make_fig(),          "table.png",          "table.svg"),
     ("Map",           map_ex.make_fig(),            "map.png",            "map.svg"),
-    ("Diverging Bar", diverging_bar_ex.make_fig(),  "diverging_bar.png",  "diverging_bar.svg"),
-    ("Sparkline",     sparkline_ex.make_fig(),      "sparkline.png",      "sparkline.svg"),
+    ("Diverging Bar",   diverging_bar_ex.make_fig(),    "diverging_bar.png",   "diverging_bar.svg"),
+    ("Sparkline Line",  sparkline_line_ex.make_fig(),   "sparkline_line.png",  "sparkline_line.svg"),
+    ("Sparkline Area",  sparkline_area_ex.make_fig(),   "sparkline_area.png",  "sparkline_area.svg"),
+    ("Sparkline Bar",   sparkline_bar_ex.make_fig(),    "sparkline_bar.png",   "sparkline_bar.svg"),
 ]
 
 

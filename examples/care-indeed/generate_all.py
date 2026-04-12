@@ -36,8 +36,10 @@ scatter_ex      = _load("scatter")
 pie_ex          = _load("pie")
 table_ex        = _load("table")
 map_ex          = _load("map")
-diverging_bar_ex = _load("diverging_bar")
-sparkline_ex    = _load("sparkline")
+diverging_bar_ex  = _load("diverging_bar")
+sparkline_line_ex = _load("sparkline_line")
+sparkline_area_ex = _load("sparkline_area")
+sparkline_bar_ex  = _load("sparkline_bar")
 
 # ── Chart registry: (display name, figure, png, svg) ─────────────────────────
 CHARTS = [
@@ -48,8 +50,10 @@ CHARTS = [
     ("Pie",           pie_ex.make_fig(),             "pie.png",            "pie.svg"),
     ("Table",         table_ex.make_fig(),           "table.png",          "table.svg"),
     ("Map",           map_ex.make_fig(),             "map.png",            "map.svg"),
-    ("Diverging Bar", diverging_bar_ex.make_fig(),   "diverging_bar.png",  "diverging_bar.svg"),
-    ("Sparkline",     sparkline_ex.make_fig(),       "sparkline.png",      "sparkline.svg"),
+    ("Diverging Bar",   diverging_bar_ex.make_fig(),    "diverging_bar.png",   "diverging_bar.svg"),
+    ("Sparkline Line",  sparkline_line_ex.make_fig(),  "sparkline_line.png",  "sparkline_line.svg"),
+    ("Sparkline Area",  sparkline_area_ex.make_fig(),  "sparkline_area.png",  "sparkline_area.svg"),
+    ("Sparkline Bar",   sparkline_bar_ex.make_fig(),   "sparkline_bar.png",   "sparkline_bar.svg"),
 ]
 
 
