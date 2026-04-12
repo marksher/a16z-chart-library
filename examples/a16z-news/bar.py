@@ -4,7 +4,7 @@ import os
 import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../..", "scripts"))
 
-import yaml
+import json
 import pandas as pd
 from chart_library import bar, save_png, save_svg
 
@@ -28,13 +28,13 @@ _df2 = pd.DataFrame({
 })
 
 
-_YAML = os.path.join(os.path.dirname(__file__), "bar.yaml")
+_CFG = os.path.join(os.path.dirname(__file__), "bar.json")
 
 
-def make_fig(yaml_path=_YAML):
+def make_fig(cfg_path=_CFG):
     """Return the stacked bar figure (used in all.html gallery)."""
-    with open(yaml_path) as f:
-        cfg = yaml.safe_load(f)
+    with open(cfg_path) as f:
+        cfg = json.load(f)
     return bar(_df2, **cfg)
 
 

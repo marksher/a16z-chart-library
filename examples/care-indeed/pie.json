@@ -1,0 +1,11 @@
+{
+  "labels": "category",
+  "values": "share",
+  "title": "AI Investment by Category",
+  "subtitle": "Percentage of total venture investment, 2025",
+  "source": "PitchBook",
+  "hole": 0.55,
+  "theme": "care-indeed",
+  "width": 700,
+  "height": 520
+}

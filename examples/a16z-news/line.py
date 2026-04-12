@@ -4,7 +4,7 @@ import os
 import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../..", "scripts"))
 
-import yaml
+import json
 import pandas as pd
 from chart_library import line, save_png, save_svg
 
@@ -20,12 +20,12 @@ _df = pd.DataFrame({
 })
 
 
-_YAML = os.path.join(os.path.dirname(__file__), "line.yaml")
+_CFG = os.path.join(os.path.dirname(__file__), "line.json")
 
 
-def make_fig(yaml_path=_YAML):
-    with open(yaml_path) as f:
-        cfg = yaml.safe_load(f)
+def make_fig(cfg_path=_CFG):
+    with open(cfg_path) as f:
+        cfg = json.load(f)
     return line(_df, **cfg)
 
 

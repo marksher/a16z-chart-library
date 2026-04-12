@@ -5,19 +5,19 @@ import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../..", "scripts"))
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../a16z-news"))
 
-import yaml
+import json
 import area as _src
 from chart_library import area, save_png, save_svg
 
 OUT = os.path.dirname(__file__)
 
 
-_YAML = os.path.join(os.path.dirname(__file__), "area.yaml")
+_CFG = os.path.join(os.path.dirname(__file__), "area.json")
 
 
-def make_fig(yaml_path=_YAML):
-    with open(yaml_path) as f:
-        cfg = yaml.safe_load(f)
+def make_fig(cfg_path=_CFG):
+    with open(cfg_path) as f:
+        cfg = json.load(f)
     return area(_src._df, **cfg)
 
 

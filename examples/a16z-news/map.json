@@ -1,0 +1,11 @@
+{
+  "locations": "country",
+  "values": "investment_b",
+  "location_mode": "ISO-3",
+  "title": "Global AI Investment",
+  "subtitle": "Venture capital investment in AI companies, 2025 (Billions USD)",
+  "source": "PitchBook",
+  "theme": "a16z-news",
+  "width": 900,
+  "height": 500
+}

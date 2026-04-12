@@ -1,9 +1,0 @@
-x: year
-y: [Permian Basin, Appalachia, Haynesville, Eagle Ford, Other]
-title: "US Marketable Natural Gas Production by Play"
-subtitle: "Bcf/d"
-source: "EIA; Natural Gas Intelligence; Wood Mackenzie"
-stacked: true
-theme: care-indeed
-width: 900
-height: 560
