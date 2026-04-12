@@ -2,7 +2,7 @@
 import os, sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../..", "scripts"))
 import pandas as pd, numpy as np
-from a16z_charts import scatter, save_png
+from chart_library import scatter, save_png
 
 OUT = os.path.dirname(__file__)
 rng = np.random.default_rng(7)

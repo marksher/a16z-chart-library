@@ -3,13 +3,13 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "a16z-charts"
+name = "chart-library"
 version = "0.1.0"
-description = "Themeable Plotly chart library — a16z.news visual style included"
+description = "Themeable Plotly chart library"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
-keywords = ["plotly", "charts", "visualization", "theme", "a16z"]
+keywords = ["plotly", "charts", "visualization", "theme"]
 dependencies = [
     "plotly>=5.20",
     "pandas>=1.5",
@@ -30,4 +30,4 @@ package-dir = {"" = "scripts"}
 where = ["scripts"]
 
 [tool.setuptools.package-data]
-a16z_charts = ["themes/*.yaml"]
+chart_library = ["themes/*.yaml"]

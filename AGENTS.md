@@ -1,6 +1,6 @@
-# Agent Instructions — a16z Chart Library
+# Agent Instructions — Chart Library
 
-This repo already contains a full a16z.news scrape plus a classified image library.
+This repo contains a scraped chart image library plus a themeable Plotly chart package.
 Default behavior is conservative: preserve the existing `source/`, `graphs/`, and
 `progress/` outputs, resume incrementally, and avoid broad rewrites unless the user
 explicitly asks for them.
@@ -13,7 +13,7 @@ scripts/
   reclassify.py
   reclass_all.py
   build_browse_html.py
-  a16z_charts/
+  chart_library/
   examples/
 
 progress/
@@ -63,7 +63,7 @@ source venv/bin/activate && python scripts/scrape.py
 ```
 
 The scraper:
-- crawls the full `https://www.a16z.news/sitemap.xml`
+- crawls the full sitemap
 - downloads article HTML plus metadata
 - classifies inline body images during scrape
 - saves new article directories under `source/YYYY-MM/<slug>/`
@@ -177,7 +177,7 @@ Typical commit flow:
 
 ```bash
 git add AGENTS.md README.md scripts/ progress/ source/ graphs/
-git commit -m "Update a16z chart library"
+git commit -m "Update chart library"
 git push
 ```
 

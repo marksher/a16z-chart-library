@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Crawl https://www.a16z.news/ for article images.
+Crawl the target site for article images.
 
 - Downloads articles into ./source/YYYY-MM/<slug>/
 - Tracks completed articles in ./progress/completed_articles.txt
@@ -68,7 +68,7 @@ DELAY_ARTICLE = 1.0   # seconds between article fetches
 DELAY_IMAGE = 0.5     # seconds between image downloads
 
 HEADERS = {
-    "User-Agent": "Mozilla/5.0 (compatible; a16z-chart-library/1.0; +research)"
+    "User-Agent": "Mozilla/5.0 (compatible; chart-library/1.0; +research)"
 }
 
 
@@ -80,7 +80,7 @@ def repo_rel(path: Path) -> str:
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description="Scrape and classify images from a16z.news.")
+    parser = argparse.ArgumentParser(description="Scrape and classify images from the target site.")
     parser.add_argument("--shard-index", type=int, default=0, help="0-based shard index for parallel runs.")
     parser.add_argument("--shard-count", type=int, default=1, help="Total shard count for parallel runs.")
     parser.add_argument(

@@ -466,7 +466,7 @@ def render_html(data: dict) -> str:
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>a16z Chart Library Browser</title>
+  <title>Chart Library Browser</title>
   <style>
     :root {{
       --bg: #f4f1e8;
@@ -844,7 +844,7 @@ def render_html(data: dict) -> str:
 <body>
   <div class="shell">
     <aside class="sidebar">
-      <h1>a16z Library Browser</h1>
+      <h1>Library Browser</h1>
       <p class="subhead">
         Directory tree on the left, leaf-folder gallery on the right.
         Use <strong>Left</strong>/<strong>Right</strong> for items and

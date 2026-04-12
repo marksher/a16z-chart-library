@@ -1,0 +1,7 @@
+plotly>=5.20
+pandas>=1.5
+PyYAML>=6.0
+kaleido>=0.2
+
+[dev]
+Pillow>=10.0

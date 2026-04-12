@@ -2,7 +2,7 @@
 import os, sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../..", "scripts"))
 import pandas as pd
-from a16z_charts import pie, save_png
+from chart_library import pie, save_png
 
 OUT = os.path.dirname(__file__)
 
