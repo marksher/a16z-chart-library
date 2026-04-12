@@ -5,25 +5,20 @@ import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../..", "scripts"))
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../a16z-news"))
 
+import yaml
 import line as _src
 from chart_library import line, save_png, save_svg
 
 OUT = os.path.dirname(__file__)
 
 
-def make_fig():
-    return line(
-        _src._df,
-        x="date",
-        y=["Proprietary", "Open Weight"],
-        title="Open Weight Models Are (Very) Close",
-        subtitle="SOTA Proprietary models score higher, but Open Weight models keep narrowing the gap",
-        source="Artificial Analysis",
-        end_labels=True,
-        theme="care-indeed",
-        width=900,
-        height=560,
-    )
+_YAML = os.path.join(os.path.dirname(__file__), "line.yaml")
+
+
+def make_fig(yaml_path=_YAML):
+    with open(yaml_path) as f:
+        cfg = yaml.safe_load(f)
+    return line(_src._df, **cfg)
 
 
 if __name__ == "__main__":

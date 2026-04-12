@@ -4,6 +4,7 @@ import os
 import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../..", "scripts"))
 
+import yaml
 import pandas as pd
 from chart_library import sparkline_line, save_png, save_svg
 
@@ -18,16 +19,13 @@ _df = pd.DataFrame({
 })
 
 
-def make_fig():
-    return sparkline_line(
-        _df,
-        x="month",
-        y=["GPT-4o", "Claude", "Gemini"],
-        end_dot=True,
-        theme="a16z-news",
-        width=300,
-        height=80,
-    )
+_YAML = os.path.join(os.path.dirname(__file__), "sparkline_line.yaml")
+
+
+def make_fig(yaml_path=_YAML):
+    with open(yaml_path) as f:
+        cfg = yaml.safe_load(f)
+    return sparkline_line(_df, **cfg)
 
 
 if __name__ == "__main__":

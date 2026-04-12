@@ -4,6 +4,7 @@ import os
 import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../..", "scripts"))
 
+import yaml
 import pandas as pd
 from chart_library import line, save_png, save_svg
 
@@ -19,19 +20,13 @@ _df = pd.DataFrame({
 })
 
 
-def make_fig():
-    return line(
-        _df,
-        x="date",
-        y=["Proprietary", "Open Weight"],
-        title="Open Weight Models Are (Very) Close",
-        subtitle="SOTA Proprietary models score higher, but Open Weight models keep narrowing the gap",
-        source="Artificial Analysis (2/17/26); Artificial Analysis Intelligence Index v4.0",
-        end_labels=True,
-        theme="a16z-news",
-        width=900,
-        height=560,
-    )
+_YAML = os.path.join(os.path.dirname(__file__), "line.yaml")
+
+
+def make_fig(yaml_path=_YAML):
+    with open(yaml_path) as f:
+        cfg = yaml.safe_load(f)
+    return line(_df, **cfg)
 
 
 if __name__ == "__main__":

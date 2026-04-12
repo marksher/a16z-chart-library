@@ -5,25 +5,20 @@ import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../..", "scripts"))
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../a16z-news"))
 
+import yaml
 import map as _src
 from chart_library import map_chart, save_png, save_svg
 
 OUT = os.path.dirname(__file__)
 
 
-def make_fig():
-    return map_chart(
-        _src._df,
-        locations="country",
-        values="investment_b",
-        location_mode="ISO-3",
-        title="Global AI Investment",
-        subtitle="Venture capital investment in AI companies, 2025 (Billions USD)",
-        source="PitchBook",
-        theme="care-indeed",
-        width=900,
-        height=500,
-    )
+_YAML = os.path.join(os.path.dirname(__file__), "map.yaml")
+
+
+def make_fig(yaml_path=_YAML):
+    with open(yaml_path) as f:
+        cfg = yaml.safe_load(f)
+    return map_chart(_src._df, **cfg)
 
 
 if __name__ == "__main__":

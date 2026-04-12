@@ -4,6 +4,7 @@ import os
 import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../..", "scripts"))
 
+import yaml
 import pandas as pd
 from chart_library import table, save_png, save_svg
 
@@ -29,16 +30,13 @@ _df = pd.DataFrame({
 })
 
 
-def make_fig():
-    return table(
-        _df,
-        title="SaaS AI Feature Pricing & Packaging Shifts",
-        subtitle="March 2024 – November 2025",
-        source="Public pricing pages",
-        highlight_rows=[0, 2, 4],
-        theme="a16z-news",
-        width=860,
-    )
+_YAML = os.path.join(os.path.dirname(__file__), "table.yaml")
+
+
+def make_fig(yaml_path=_YAML):
+    with open(yaml_path) as f:
+        cfg = yaml.safe_load(f)
+    return table(_df, **cfg)
 
 
 if __name__ == "__main__":

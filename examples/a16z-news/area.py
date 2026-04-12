@@ -4,6 +4,7 @@ import os
 import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../..", "scripts"))
 
+import yaml
 import pandas as pd
 from chart_library import area, save_png, save_svg
 
@@ -19,19 +20,13 @@ _df = pd.DataFrame({
 })
 
 
-def make_fig():
-    return area(
-        _df,
-        x="year",
-        y=["Permian Basin", "Appalachia", "Haynesville", "Eagle Ford", "Other"],
-        title="US Marketable Natural Gas Production by Play",
-        subtitle="Bcf/d",
-        source="EIA; Natural Gas Intelligence; Wood Mackenzie",
-        stacked=True,
-        theme="a16z-news",
-        width=900,
-        height=560,
-    )
+_YAML = os.path.join(os.path.dirname(__file__), "area.yaml")
+
+
+def make_fig(yaml_path=_YAML):
+    with open(yaml_path) as f:
+        cfg = yaml.safe_load(f)
+    return area(_df, **cfg)
 
 
 if __name__ == "__main__":

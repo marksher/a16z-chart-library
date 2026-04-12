@@ -1,0 +1,5 @@
+x: month
+y: [GPT-4o, Claude, Gemini]
+theme: care-indeed
+width: 300
+height: 80

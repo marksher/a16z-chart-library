@@ -4,6 +4,7 @@ import os
 import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../..", "scripts"))
 
+import yaml
 import pandas as pd
 from chart_library import map_chart, save_png, save_svg
 
@@ -23,19 +24,13 @@ _df = pd.DataFrame({
 })
 
 
-def make_fig():
-    return map_chart(
-        _df,
-        locations="country",
-        values="investment_b",
-        location_mode="ISO-3",
-        title="Global AI Investment",
-        subtitle="Venture capital investment in AI companies, 2025 (Billions USD)",
-        source="PitchBook",
-        theme="a16z-news",
-        width=900,
-        height=500,
-    )
+_YAML = os.path.join(os.path.dirname(__file__), "map.yaml")
+
+
+def make_fig(yaml_path=_YAML):
+    with open(yaml_path) as f:
+        cfg = yaml.safe_load(f)
+    return map_chart(_df, **cfg)
 
 
 if __name__ == "__main__":

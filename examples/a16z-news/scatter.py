@@ -4,6 +4,7 @@ import os
 import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../..", "scripts"))
 
+import yaml
 import pandas as pd
 import numpy as np
 from chart_library import scatter, save_png, save_svg
@@ -37,21 +38,13 @@ _df = pd.concat([
 ], ignore_index=True)
 
 
-def make_fig():
-    fig = scatter(
-        _df,
-        x="cost",
-        y="usage",
-        title="Cost vs. Usage Based on Source",
-        subtitle="Total monthly token usage (log scale) vs. cost per 1M tokens (log scale)",
-        source="OpenRouter",
-        color_col="type",
-        label_col="model",
-        theme="a16z-news",
-        width=900,
-        height=580,
-    )
-    # Log scales
+_YAML = os.path.join(os.path.dirname(__file__), "scatter.yaml")
+
+
+def make_fig(yaml_path=_YAML):
+    with open(yaml_path) as f:
+        cfg = yaml.safe_load(f)
+    fig = scatter(_df, **cfg)
     fig.update_xaxes(type="log", title_text="Cost per 1M Tokens ($)")
     fig.update_yaxes(type="log", title_text="Total Usage in Millions of Tokens")
     return fig

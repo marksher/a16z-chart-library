@@ -4,6 +4,7 @@ import os
 import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../..", "scripts"))
 
+import yaml
 import pandas as pd
 from chart_library import bar, save_png, save_svg
 
@@ -27,22 +28,14 @@ _df2 = pd.DataFrame({
 })
 
 
-def make_fig():
+_YAML = os.path.join(os.path.dirname(__file__), "bar.yaml")
+
+
+def make_fig(yaml_path=_YAML):
     """Return the stacked bar figure (used in all.html gallery)."""
-    return bar(
-        _df2,
-        x="year",
-        y=["Microsoft", "Meta", "Alphabet", "Amazon", "Oracle"],
-        title="Hyperscaler Capex To The Moon",
-        subtitle="Combined capital expenditures expected to top $650 billion in 2026",
-        source="Bloomberg; 2026 estimates based on the midpoint of guidance for Meta, Alphabet and Amazon, and analyst consensus for Microsoft and Oracle",
-        orientation="v",
-        stacked=True,
-        show_values=False,
-        theme="a16z-news",
-        width=900,
-        height=560,
-    )
+    with open(yaml_path) as f:
+        cfg = yaml.safe_load(f)
+    return bar(_df2, **cfg)
 
 
 if __name__ == "__main__":

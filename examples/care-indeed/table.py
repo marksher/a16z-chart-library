@@ -5,22 +5,20 @@ import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../..", "scripts"))
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../a16z-news"))
 
+import yaml
 import table as _src
 from chart_library import table, save_png, save_svg
 
 OUT = os.path.dirname(__file__)
 
 
-def make_fig():
-    return table(
-        _src._df,
-        title="SaaS AI Feature Pricing & Packaging Shifts",
-        subtitle="March 2024 – November 2025",
-        source="Public pricing pages",
-        highlight_rows=[0, 2, 4],
-        theme="care-indeed",
-        width=860,
-    )
+_YAML = os.path.join(os.path.dirname(__file__), "table.yaml")
+
+
+def make_fig(yaml_path=_YAML):
+    with open(yaml_path) as f:
+        cfg = yaml.safe_load(f)
+    return table(_src._df, **cfg)
 
 
 if __name__ == "__main__":

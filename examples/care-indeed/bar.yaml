@@ -1,0 +1,11 @@
+x: year
+y: [Microsoft, Meta, Alphabet, Amazon, Oracle]
+title: "Hyperscaler Capex To The Moon"
+subtitle: "Combined capital expenditures expected to top $650 billion in 2026"
+source: "Bloomberg; 2026 estimates based on the midpoint of guidance for Meta, Alphabet and Amazon, and analyst consensus for Microsoft and Oracle"
+orientation: v
+stacked: true
+show_values: false
+theme: care-indeed
+width: 900
+height: 560
