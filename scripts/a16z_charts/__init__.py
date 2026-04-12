@@ -1,34 +1,50 @@
 """
-a16z_charts — a publication-quality chart package matching the a16z.news visual style.
+a16z-charts — Themeable Plotly chart library.
 
-Quick start:
-    import a16z_charts as a16z
+All chart functions return a ``plotly.graph_objects.Figure``.  Display it
+interactively with ``fig.show()`` or export as PNG with ``save_png(fig, "out.png")``.
 
-    a16z.use_theme()   # apply globally once
+Quick start
+-----------
+>>> import pandas as pd
+>>> from a16z_charts import bar, save_png
+>>>
+>>> df = pd.DataFrame({"company": ["OpenAI", "Anthropic", "Google"],
+...                    "revenue": [3.7, 0.8, 2.1]})
+>>> fig = bar(df, x="company", y="revenue",
+...           title="AI Revenue (2025)",
+...           subtitle="Billions USD",
+...           source="Company filings")
+>>> fig.show()                    # interactive
+>>> save_png(fig, "revenue.png")  # static PNG
 
-    fig, ax = a16z.bar_chart(df, x="category", y="value", title="My Chart")
-    fig.savefig("output.png")
+Swap themes
+-----------
+>>> fig = bar(df, x="company", y="revenue", theme="path/to/mytheme.yaml")
+>>> fig = bar(df, x="company", y="revenue", theme=None)  # Plotly defaults
 """
 
-from .theme import use_theme, style_axes, add_title, add_source, add_branding
-from .palette import (
-    PALETTE, BACKGROUND, TEXT_DARK, TEXT_MID, TEXT_LIGHT,
-    TEAL, MAROON, GOLD, NAVY, GREEN, LIGHT_BLUE, SALMON,
-    PALETTE_DIVERGING, PALETTE_SEQUENTIAL, PALETTE_CATEGORICAL,
-)
-from .bar     import bar_chart
-from .line    import line_chart
-from .area    import area_chart
-from .scatter import scatter_chart
-from .pie     import donut_chart
-from .table   import table_chart
-from .combo   import combo_chart
+from .charts.bar import bar
+from .charts.line import line
+from .charts.area import area
+from .charts.scatter import scatter
+from .charts.pie import pie
+from .charts.table import table
+from .charts.map import map_chart
+from .themes.base import load_theme, Theme
+from .utils.layout import save_png
+
+__version__ = "0.1.0"
 
 __all__ = [
-    "use_theme", "style_axes", "add_title", "add_source", "add_branding",
-    "PALETTE", "BACKGROUND", "TEXT_DARK", "TEXT_MID", "TEXT_LIGHT",
-    "TEAL", "MAROON", "GOLD", "NAVY", "GREEN", "LIGHT_BLUE", "SALMON",
-    "PALETTE_DIVERGING", "PALETTE_SEQUENTIAL", "PALETTE_CATEGORICAL",
-    "bar_chart", "line_chart", "area_chart", "scatter_chart",
-    "donut_chart", "table_chart", "combo_chart",
+    "bar",
+    "line",
+    "area",
+    "scatter",
+    "pie",
+    "table",
+    "map_chart",
+    "load_theme",
+    "Theme",
+    "save_png",
 ]

@@ -1,10 +1,14 @@
+# Scraper dependencies
 requests
 beautifulsoup4
 lxml
 openai
 python-dotenv
-Pillow
-matplotlib
-seaborn
+
+# Chart library dependencies (also declared in pyproject.toml)
+plotly
+kaleido
+PyYAML
 pandas
 numpy
+Pillow

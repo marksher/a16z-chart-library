@@ -1,167 +1,440 @@
-# a16z Chart Library
+# a16z-charts
 
-Scrapes [a16z.news](https://www.a16z.news/), saves article source pages, downloads inline body images, classifies them by visual type, and generates a static browser for the collected library.
+A themeable Plotly chart library that replicates the visual style of [a16z.news](https://www.a16z.news/) publications.
 
-## Quick Start
+Every chart function returns a `plotly.graph_objects.Figure` — display it interactively in a notebook or browser, or export as a static PNG. The visual style (fonts, colors, grid, branding) is fully defined in a YAML theme file you can swap out or override.
 
-### 1. Set up the environment
+---
 
-```bash
-python -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-```
-
-Create `.env` with:
-
-```env
-OPENAI_API_KEY=sk-proj-...
-MODEL=o4-mini
-```
-
-### 2. Run the scraper
+## Install
 
 ```bash
-source venv/bin/activate
-python scripts/scrape.py
+pip install git+https://github.com/marksher/a16z-chart-library.git
 ```
 
-That will:
-- crawl the a16z.news sitemap
-- save article files under `source/YYYY-MM/<slug>/`
-- save classified images under `graphs/<type>/`
-- record finished articles in `progress/completed_articles.txt`
+**Dependencies:** `plotly`, `pandas`, `PyYAML`, `kaleido` (for PNG export)
 
-### 3. Build the browser
+---
 
-```bash
-source venv/bin/activate
-python scripts/build_browse_html.py
+## Quick start
+
+```python
+import pandas as pd
+from a16z_charts import bar, save_png
+
+df = pd.DataFrame({
+    "company": ["OpenAI", "Anthropic", "Google", "Meta"],
+    "revenue":  [3.7,     0.8,         2.1,      1.4],
+})
+
+fig = bar(
+    df,
+    x="company",
+    y="revenue",
+    title="AI Revenue Estimates",
+    subtitle="Billions USD, 2025",
+    source="Company filings; analyst estimates",
+)
+
+fig.show()                    # interactive browser / notebook
+save_png(fig, "revenue.png")  # static PNG at 2× resolution
 ```
 
-This writes [graphs/browse.html](/Users/runners/working/a16z-chart-library/graphs/browse.html), which lets you browse the directory tree on the left and arrow through files in each leaf directory on the right.
+---
 
-## Reference
+## Chart types
 
-### Repository layout
+All functions share the same common parameters:
 
-```text
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `title` | `""` | Bold serif headline |
+| `subtitle` | `None` | Lighter supporting line |
+| `source` | `None` | Source attribution (bottom-left) |
+| `theme` | `"a16z-news"` | Theme name, file path, or `None` for Plotly defaults |
+| `width` | `900` | Figure width in pixels |
+| `height` | `560` | Figure height in pixels |
+
+---
+
+### Bar chart
+
+```python
+from a16z_charts import bar
+
+# Single-series horizontal bar
+fig = bar(
+    df,
+    x="category",          # column for labels
+    y="value",             # column for bar lengths
+    orientation="h",       # "v" (default) or "h"
+    show_values=True,      # annotate each bar
+    title="My Chart",
+)
+
+# Multi-series stacked vertical bar
+fig = bar(
+    df,
+    x="year",
+    y=["Series A", "Series B", "Series C"],
+    stacked=True,
+    show_values=False,
+    title="Stacked Example",
+)
+```
+
+![Bar chart example](examples/a16z-news/bar_stacked.png)
+
+---
+
+### Line chart
+
+```python
+from a16z_charts import line
+
+fig = line(
+    df,
+    x="date",
+    y=["Proprietary", "Open Weight"],  # multiple series
+    end_labels=True,     # inline labels at line ends (default when using theme)
+    dashed=["Open Weight"],            # render specific series dashed
+    title="Open Weight Models Are (Very) Close",
+    subtitle="SOTA Proprietary models score higher, but Open Weight models keep narrowing the gap",
+    source="Artificial Analysis",
+)
+```
+
+![Line chart example](examples/a16z-news/line.png)
+
+---
+
+### Area chart
+
+```python
+from a16z_charts import area
+
+fig = area(
+    df,
+    x="year",
+    y=["Permian Basin", "Appalachia", "Haynesville", "Eagle Ford", "Other"],
+    stacked=True,           # True = stacked fills; False = overlapping
+    title="US Natural Gas Production by Play",
+    subtitle="Bcf/d",
+    source="EIA; Wood Mackenzie",
+)
+```
+
+![Area chart example](examples/a16z-news/area.png)
+
+---
+
+### Scatter / bubble chart
+
+```python
+from a16z_charts import scatter
+
+# Categorical coloring (one color per category)
+fig = scatter(
+    df,
+    x="cost",
+    y="usage",
+    color_col="type",       # one color per unique value
+    label_col="model",      # annotate each point
+    title="Cost vs. Usage Based on Source",
+    source="OpenRouter",
+)
+
+# Bubble chart (size encodes a third variable)
+fig = scatter(
+    df,
+    x="cost",
+    y="performance",
+    size_col="market_share",  # scales marker size
+    title="Market Landscape",
+)
+```
+
+![Scatter chart example](examples/a16z-news/scatter.png)
+
+---
+
+### Pie / donut chart
+
+```python
+from a16z_charts import pie
+
+fig = pie(
+    df,
+    labels="category",
+    values="share",
+    hole=0.55,             # donut size; 0 = full pie; default from theme
+    title="AI Investment by Category",
+    subtitle="Percentage of total venture investment, 2025",
+    source="PitchBook; a16z analysis",
+)
+```
+
+![Pie chart example](examples/a16z-news/pie.png)
+
+---
+
+### Table
+
+```python
+from a16z_charts import table
+
+fig = table(
+    df,
+    title="SaaS AI Pricing & Packaging Shifts",
+    subtitle="March 2024 – November 2025",
+    source="Public pricing pages",
+    highlight_rows=[0, 2, 4],   # row indices highlighted in gold
+)
+```
+
+![Table chart example](examples/a16z-news/table.png)
+
+---
+
+### Map (choropleth)
+
+```python
+from a16z_charts import map_chart
+
+df = pd.DataFrame({
+    "country":      ["USA", "CHN", "GBR", "IND", "DEU"],
+    "investment_b": [120,   55,    18,    15,    12],
+})
+
+fig = map_chart(
+    df,
+    locations="country",        # ISO-3 country codes
+    values="investment_b",
+    location_mode="ISO-3",      # "ISO-3" (world) or "USA-states"
+    title="Global AI Investment",
+    subtitle="Billions USD, 2025",
+    source="PitchBook",
+)
+
+# US state map
+fig = map_chart(
+    df,
+    locations="state",          # 2-letter state codes (TX, CA, …)
+    values="value",
+    location_mode="USA-states",
+    title="Investment by State",
+)
+```
+
+![Map chart example](examples/a16z-news/map.png)
+
+---
+
+## Themes
+
+The visual style is fully defined in a YAML file. Three ways to specify a theme:
+
+```python
+# 1. Built-in theme by name (default)
+fig = bar(df, x="x", y="y", theme="a16z-news")
+
+# 2. Path to a custom YAML file
+fig = bar(df, x="x", y="y", theme="path/to/my-theme.yaml")
+
+# 3. Plotly defaults — no theming applied
+fig = bar(df, x="x", y="y", theme=None)
+```
+
+### Theme file structure
+
+Copy `themes/a16z-news/theme.yaml` as a starting point. Every key is optional — missing keys fall back to Plotly defaults for that attribute.
+
+```yaml
+name: my-brand
+version: "1.0"
+
+background: "#FFFFFF"
+plot_background: "#FFFFFF"
+
+text:
+  title: "#000000"
+  subtitle: "#666666"
+  axis: "#999999"
+  source: "#999999"
+  label: "#444444"
+
+palette:
+  - "#0057B7"   # primary
+  - "#FF8C00"   # secondary
+  - "#228B22"   # tertiary
+  # … up to 7 colors recommended
+
+fonts:
+  family: "Inter, Arial, sans-serif"
+
+font_sizes:
+  title: 22
+  subtitle: 13
+  axis_tick: 10
+  axis_label: 11
+  source: 9
+  data_label: 9
+
+margins:
+  top: 90
+  bottom: 60
+  left: 60
+  right: 50
+
+grid:
+  color: "#EEEEEE"
+  width: 1
+  horizontal: true
+  vertical: false
+
+spines:
+  top: false
+  right: false
+  color: "#CCCCCC"
+  width: 1
+
+legend:
+  position: "bottom"
+  orientation: "h"
+  marker: "circle"
+  border: false
+
+branding:
+  show: true
+  text: "MY BRAND"
+  position: "bottom_right"
+  color: "#000000"
+  font_size: 10
+  font_weight: "bold"
+
+source:
+  prefix: "Source: "
+  position: "bottom_left"
+  italic: true
+
+# Per-chart-type tweaks
+bar:
+  gap: 0.25
+  group_gap: 0.05
+
+line:
+  width: 2.5
+  end_labels: true
+  markers: false
+  marker_size: 6
+
+area:
+  opacity: 0.75
+  line_width: 0
+
+scatter:
+  marker_size: 8
+  opacity: 0.8
+
+pie:
+  hole: 0.55
+
+table:
+  header_background: "#000000"
+  header_text: "#FFFFFF"
+  highlight_color: "#FFD700"
+  border_color: "#EEEEEE"
+
+map:
+  land_color: "#E8E8E8"
+  ocean_color: "#D4D4D4"
+  border_color: "#CCCCCC"
+```
+
+### Load and inspect a theme
+
+```python
+from a16z_charts import load_theme
+
+t = load_theme("a16z-news")
+print(t.palette)        # ['#7B1A2A', '#2B6C8F', ...]
+print(t.fonts["family"])  # "Georgia, 'Times New Roman', serif"
+
+# Load custom theme
+my_theme = load_theme("path/to/my-theme.yaml")
+fig = bar(df, x="x", y="y", theme=my_theme)
+```
+
+---
+
+## Export
+
+```python
+from a16z_charts import save_png
+
+# 2× PNG (recommended for presentations and reports)
+save_png(fig, "chart.png", scale=2)
+
+# Standard resolution
+save_png(fig, "chart.png", scale=1)
+
+# Interactive HTML (no kaleido needed)
+fig.write_html("chart.html")
+
+# Embed in a Jupyter notebook
+fig.show()
+```
+
+**Note:** `save_png` requires `kaleido`. If it is not installed, you will see a clear error message: `PNG export requires kaleido. Install with: pip install kaleido`
+
+---
+
+## Repository layout
+
+```
 scripts/
-  scrape.py
-  reclassify.py
-  reclass_all.py
-  build_browse_html.py
-  a16z_charts/
-  examples/
+  a16z_charts/          ← Python package
+    __init__.py         ← public API
+    themes/
+      base.py           ← Theme dataclass + load_theme()
+      a16z-news.yaml    ← bundled theme (package data)
+    charts/
+      bar.py  line.py  area.py  scatter.py  pie.py  table.py  map.py
+    utils/
+      layout.py         ← _apply_theme(), save_png()
 
-progress/
-  completed_articles.txt
-  in_progress/
-    <article-slug>.json
-  .queue.txt
-  .in_progress.txt
-  .done.txt
+themes/
+  a16z-news/
+    theme.yaml          ← editable copy of the a16z-news theme
 
-source/
-  YYYY-MM/
-    <article-slug>/
-      index.html
-      metadata.json
+examples/
+  a16z-news/            ← all chart types with a16z-news theme
+  default/              ← all chart types with Plotly default styling
 
-graphs/
-  browse.html
-  bar/
-  line/
-  area/
-  pie/
-  scatter/
-  table/
-  combo/
-  map/
-  infographic/
-  title/
-  screenshot/
-  other/
+graphs/                 ← scraped chart images from a16z.news
+  bar/  line/  area/  scatter/  pie/  table/  map/  …
+
+source/                 ← scraped article HTML
+
+pyproject.toml
 ```
 
-### Scraper behavior
+---
 
-`scripts/scrape.py` is restart-safe.
+## Design system
 
-- `progress/completed_articles.txt` is the durable finished manifest.
-- `progress/in_progress/<slug>.json` is the ephemeral in-flight marker.
-- If the scraper restarts and finds an in-progress marker for an article that is not in the completed manifest, it deletes that article’s partial outputs and retries it from scratch.
-- Legacy `source/unknown/` cache entries are preserved and backfilled into the completed manifest when possible.
+The a16z-news theme was extracted by analyzing charts published on [a16z.news](https://www.a16z.news/) from November 2025 onward.
 
-### Scraper commands
+| Element | Value |
+|---------|-------|
+| Background | `#F0EBE3` warm parchment |
+| Title font | Georgia, bold, 22px, `#1C2B3A` |
+| Subtitle font | Georgia, 13px, `#5A6472` |
+| Primary data color | `#7B1A2A` maroon/burgundy |
+| Full palette | maroon → teal → sage → gold → navy → light blue → salmon |
+| Grid | Horizontal only, `#E0DAD0`, 1px |
+| Legend | Below chart, horizontal, no border |
+| Branding | "A16Z" bold, bottom-right, `#1C2B3A` |
+| Source | Italic, bottom-left, `#9AA3AC`, 9px |
 
-Single-process run:
-
-```bash
-source venv/bin/activate
-python scripts/scrape.py
-```
-
-Prepare manifest and cleanup state only:
-
-```bash
-source venv/bin/activate
-python scripts/scrape.py --prepare-manifest-only
-```
-
-15-way sharded run:
-
-```bash
-source venv/bin/activate
-python scripts/scrape.py --prepare-manifest-only
-python scripts/scrape.py --shard-index 0 --shard-count 15 --skip-backfill
-python scripts/scrape.py --shard-index 1 --shard-count 15 --skip-backfill
-# ...through shard 14
-```
-
-When running shards, do the prepare step once first, then launch workers with `--skip-backfill`.
-
-### Classification scripts
-
-Reclassify only `graphs/other/` into the expanded taxonomy:
-
-```bash
-source venv/bin/activate
-python scripts/reclassify.py
-```
-
-Reclassify every image in `graphs/` into the two-tier structure used by `scripts/reclass_all.py`:
-
-```bash
-source venv/bin/activate
-python scripts/reclass_all.py
-```
-
-That script writes progress files to:
-
-- `progress/.queue.txt`
-- `progress/.in_progress.txt`
-- `progress/.done.txt`
-
-### Browser generator
-
-Regenerate the static browser any time `source/` or `graphs/` changes:
-
-```bash
-source venv/bin/activate
-python scripts/build_browse_html.py
-```
-
-The generated browser:
-
-- lists only the directory structure in the sidebar
-- opens a gallery for each leaf directory
-- supports `Left` / `Right` for items
-- supports `Up` / `Down` for leaf directories
-- caps image preview height at `600px` without upscaling smaller images
-
-### Requirements
-
-- Python 3.12+
-- `OPENAI_API_KEY` in `.env`
-- dependencies from `requirements.txt`
+Every chart type enforces these attributes — the same title treatment, background, fonts, source attribution, and branding appear on bar charts, donut charts, tables, and maps alike.

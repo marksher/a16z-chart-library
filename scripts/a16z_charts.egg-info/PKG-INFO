@@ -1,0 +1,183 @@
+Metadata-Version: 2.4
+Name: a16z-charts
+Version: 0.1.0
+Summary: Themeable Plotly chart library — a16z.news visual style included
+License: MIT
+Project-URL: Repository, https://github.com/marksher/a16z-chart-library
+Keywords: plotly,charts,visualization,theme,a16z
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: plotly>=5.20
+Requires-Dist: pandas>=1.5
+Requires-Dist: PyYAML>=6.0
+Requires-Dist: kaleido>=0.2
+Provides-Extra: dev
+Requires-Dist: Pillow>=10.0; extra == "dev"
+
+# a16z Chart Library
+
+Scrapes [a16z.news](https://www.a16z.news/), saves article source pages, downloads inline body images, classifies them by visual type, and generates a static browser for the collected library.
+
+## Quick Start
+
+### 1. Set up the environment
+
+```bash
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
+Create `.env` with:
+
+```env
+OPENAI_API_KEY=sk-proj-...
+MODEL=o4-mini
+```
+
+### 2. Run the scraper
+
+```bash
+source venv/bin/activate
+python scripts/scrape.py
+```
+
+That will:
+- crawl the a16z.news sitemap
+- save article files under `source/YYYY-MM/<slug>/`
+- save classified images under `graphs/<type>/`
+- record finished articles in `progress/completed_articles.txt`
+
+### 3. Build the browser
+
+```bash
+source venv/bin/activate
+python scripts/build_browse_html.py
+```
+
+This writes [graphs/browse.html](/Users/runners/working/a16z-chart-library/graphs/browse.html), which lets you browse the directory tree on the left and arrow through files in each leaf directory on the right.
+
+## Reference
+
+### Repository layout
+
+```text
+scripts/
+  scrape.py
+  reclassify.py
+  reclass_all.py
+  build_browse_html.py
+  a16z_charts/
+  examples/
+
+progress/
+  completed_articles.txt
+  in_progress/
+    <article-slug>.json
+  .queue.txt
+  .in_progress.txt
+  .done.txt
+
+source/
+  YYYY-MM/
+    <article-slug>/
+      index.html
+      metadata.json
+
+graphs/
+  browse.html
+  bar/
+  line/
+  area/
+  pie/
+  scatter/
+  table/
+  combo/
+  map/
+  infographic/
+  title/
+  screenshot/
+  other/
+```
+
+### Scraper behavior
+
+`scripts/scrape.py` is restart-safe.
+
+- `progress/completed_articles.txt` is the durable finished manifest.
+- `progress/in_progress/<slug>.json` is the ephemeral in-flight marker.
+- If the scraper restarts and finds an in-progress marker for an article that is not in the completed manifest, it deletes that article’s partial outputs and retries it from scratch.
+- Legacy `source/unknown/` cache entries are preserved and backfilled into the completed manifest when possible.
+
+### Scraper commands
+
+Single-process run:
+
+```bash
+source venv/bin/activate
+python scripts/scrape.py
+```
+
+Prepare manifest and cleanup state only:
+
+```bash
+source venv/bin/activate
+python scripts/scrape.py --prepare-manifest-only
+```
+
+15-way sharded run:
+
+```bash
+source venv/bin/activate
+python scripts/scrape.py --prepare-manifest-only
+python scripts/scrape.py --shard-index 0 --shard-count 15 --skip-backfill
+python scripts/scrape.py --shard-index 1 --shard-count 15 --skip-backfill
+# ...through shard 14
+```
+
+When running shards, do the prepare step once first, then launch workers with `--skip-backfill`.
+
+### Classification scripts
+
+Reclassify only `graphs/other/` into the expanded taxonomy:
+
+```bash
+source venv/bin/activate
+python scripts/reclassify.py
+```
+
+Reclassify every image in `graphs/` into the two-tier structure used by `scripts/reclass_all.py`:
+
+```bash
+source venv/bin/activate
+python scripts/reclass_all.py
+```
+
+That script writes progress files to:
+
+- `progress/.queue.txt`
+- `progress/.in_progress.txt`
+- `progress/.done.txt`
+
+### Browser generator
+
+Regenerate the static browser any time `source/` or `graphs/` changes:
+
+```bash
+source venv/bin/activate
+python scripts/build_browse_html.py
+```
+
+The generated browser:
+
+- lists only the directory structure in the sidebar
+- opens a gallery for each leaf directory
+- supports `Left` / `Right` for items
+- supports `Up` / `Down` for leaf directories
+- caps image preview height at `600px` without upscaling smaller images
+
+### Requirements
+
+- Python 3.12+
+- `OPENAI_API_KEY` in `.env`
+- dependencies from `requirements.txt`
