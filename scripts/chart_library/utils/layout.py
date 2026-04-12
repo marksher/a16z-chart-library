@@ -244,6 +244,27 @@ def _hex_to_rgba(hex_color: str, alpha: float) -> str:
     return f"rgba({r},{g},{b},{alpha})"
 
 
+def save_svg(fig: go.Figure, path: str) -> None:
+    """
+    Export *fig* as a vector SVG at *path*.
+
+    Requires kaleido: pip install kaleido
+
+    Parameters
+    ----------
+    fig   : plotly Figure
+    path  : output file path, e.g. "chart.svg"
+    """
+    try:
+        fig.write_image(path, format="svg")
+    except Exception as exc:
+        if "kaleido" in str(exc).lower() or "orca" in str(exc).lower():
+            raise RuntimeError(
+                "SVG export requires kaleido. Install with: pip install kaleido"
+            ) from exc
+        raise
+
+
 def save_png(fig: go.Figure, path: str, scale: int = 2) -> None:
     """
     Export *fig* as a static PNG at *path*.

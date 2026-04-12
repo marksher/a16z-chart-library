@@ -5,7 +5,7 @@ import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../..", "scripts"))
 
 import pandas as pd
-from chart_library import bar, save_png
+from chart_library import bar, save_png, save_svg
 
 OUT = os.path.dirname(__file__)
 
@@ -60,13 +60,15 @@ if __name__ == "__main__":
         height=420,
     )
     save_png(fig1, os.path.join(OUT, "bar_single.png"))
+    save_svg(fig1, os.path.join(OUT, "bar_single.svg"))
     fig1.write_html(os.path.join(OUT, "bar_single.html"))
-    print("bar_single.png written")
+    print("bar_single.png + bar_single.svg written")
 
     fig2 = make_fig()
     save_png(fig2, os.path.join(OUT, "bar_stacked.png"))
+    save_svg(fig2, os.path.join(OUT, "bar_stacked.svg"))
     fig2.write_html(os.path.join(OUT, "bar_stacked.html"))
-    print("bar_stacked.png written")
+    print("bar_stacked.png + bar_stacked.svg written")
 
     # ── Example 3: SVG logo branding ─────────────────────────────────────────
     # Demonstrates replacing the text brand with a company logo image.
@@ -92,5 +94,6 @@ if __name__ == "__main__":
         height=560,
     )
     save_png(fig3, os.path.join(OUT, "bar_logo.png"))
+    save_svg(fig3, os.path.join(OUT, "bar_logo.svg"))
     fig3.write_html(os.path.join(OUT, "bar_logo.html"))
-    print("bar_logo.png written")
+    print("bar_logo.png + bar_logo.svg written")

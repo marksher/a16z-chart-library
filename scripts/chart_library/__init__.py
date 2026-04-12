@@ -32,7 +32,7 @@ from .charts.pie import pie
 from .charts.table import table
 from .charts.map import map_chart
 from .themes.base import load_theme, Theme
-from .utils.layout import save_png
+from .utils.layout import save_png, save_svg
 
 __version__ = "0.1.0"
 
@@ -47,4 +47,5 @@ __all__ = [
     "load_theme",
     "Theme",
     "save_png",
+    "save_svg",
 ]

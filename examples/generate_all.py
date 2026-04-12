@@ -1,6 +1,6 @@
 """
 Generate all.html — a gallery of all 7 chart types using the a16z-news theme.
-Each section shows: <chart type name> / interactive Plotly chart / PNG side by side.
+Each section shows: chart type / interactive / PNG / SVG side by side.
 Run from the repo root: python examples/generate_all.py
 """
 
@@ -8,12 +8,12 @@ import os
 import sys
 import base64
 
-# Add scripts/ to path so chart_library is importable from example files
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "scripts"))
 
-# Add examples/a16z-news/ to path so we can import make_fig from each example
 EXAMPLES_DIR = os.path.join(os.path.dirname(__file__), "a16z-news")
 sys.path.insert(0, EXAMPLES_DIR)
+
+from chart_library import load_theme
 
 import bar as bar_ex
 import line as line_ex
@@ -23,35 +23,71 @@ import pie as pie_ex
 import table as table_ex
 import map as map_ex
 
-# ── Chart registry: (display name, figure, png filename) ─────────────────────
-
+# ── Chart registry: (display name, figure, png filename, svg filename) ────────
 CHARTS = [
-    ("Bar",     bar_ex.make_fig(),     "bar_stacked.png"),
-    ("Line",    line_ex.make_fig(),    "line.png"),
-    ("Area",    area_ex.make_fig(),    "area.png"),
-    ("Scatter", scatter_ex.make_fig(), "scatter.png"),
-    ("Pie",     pie_ex.make_fig(),     "pie.png"),
-    ("Table",   table_ex.make_fig(),   "table.png"),
-    ("Map",     map_ex.make_fig(),     "map.png"),
+    ("Bar",     bar_ex.make_fig(),     "bar_stacked.png", "bar_stacked.svg"),
+    ("Line",    line_ex.make_fig(),    "line.png",        "line.svg"),
+    ("Area",    area_ex.make_fig(),    "area.png",        "area.svg"),
+    ("Scatter", scatter_ex.make_fig(), "scatter.png",     "scatter.svg"),
+    ("Pie",     pie_ex.make_fig(),     "pie.png",         "pie.svg"),
+    ("Table",   table_ex.make_fig(),   "table.png",       "table.svg"),
+    ("Map",     map_ex.make_fig(),     "map.png",         "map.svg"),
 ]
 
 
-def encode_png(png_path: str) -> str:
-    with open(png_path, "rb") as f:
+def encode_file(path: str) -> str:
+    with open(path, "rb") as f:
         return base64.b64encode(f.read()).decode("utf-8")
 
 
-# ── Build HTML sections ───────────────────────────────────────────────────────
+# ── Theme swatch ──────────────────────────────────────────────────────────────
+t = load_theme("a16z-news")
 
+
+def _swatch_item(color: str, name: str = "") -> str:
+    label = f'<span class="swatch-name">{name}</span>' if name else ""
+    return (
+        f'<div class="swatch-item">'
+        f'<div class="swatch-box" style="background:{color}"></div>'
+        f'<span class="swatch-hex">{color}</span>{label}'
+        f'</div>'
+    )
+
+
+palette_html = "".join(_swatch_item(c) for c in t.palette)
+ui_html = "".join(_swatch_item(c, n) for c, n in [
+    (t.background,       "background"),
+    (t.text["title"],    "title"),
+    (t.text["subtitle"], "subtitle"),
+    (t.text["axis"],     "axis"),
+    (t.text["source"],   "source"),
+    (t.grid["color"],    "grid"),
+    (t.spines["color"],  "spines"),
+])
+
+swatch_section = f"""
+  <section class="swatch-section">
+    <h2>Theme Colors</h2>
+    <div class="swatch-group">
+      <div class="swatch-group-label">Data Palette</div>
+      <div class="swatch-row">{palette_html}</div>
+    </div>
+    <div class="swatch-group">
+      <div class="swatch-group-label">UI Colors</div>
+      <div class="swatch-row">{ui_html}</div>
+    </div>
+  </section>
+"""
+
+# ── Build chart sections ──────────────────────────────────────────────────────
 sections = []
-for i, (name, fig, png_name) in enumerate(CHARTS):
+for i, (name, fig, png_name, svg_name) in enumerate(CHARTS):
     png_path = os.path.join(EXAMPLES_DIR, png_name)
-    b64 = encode_png(png_path)
+    svg_path = os.path.join(EXAMPLES_DIR, svg_name)
+    png_b64 = encode_file(png_path)
+    svg_b64 = encode_file(svg_path)
 
-    # Make charts responsive so they fill their pane instead of overflowing
     fig.update_layout(autosize=True)
-
-    # First chart includes plotlyjs, rest use existing global
     include_plotlyjs = "cdn" if i == 0 else False
     chart_html = fig.to_html(include_plotlyjs=include_plotlyjs, full_html=False,
                               config={"displayModeBar": False, "responsive": True})
@@ -66,7 +102,11 @@ for i, (name, fig, png_name) in enumerate(CHARTS):
       </div>
       <div class="chart-pane chart-static">
         <div class="pane-label">PNG export</div>
-        <img src="data:image/png;base64,{b64}" alt="{name} chart PNG" />
+        <img src="data:image/png;base64,{png_b64}" alt="{name} chart PNG" />
+      </div>
+      <div class="chart-pane chart-svg">
+        <div class="pane-label">SVG export</div>
+        <img src="data:image/svg+xml;base64,{svg_b64}" alt="{name} chart SVG" />
       </div>
     </div>
   </section>"""
@@ -89,7 +129,7 @@ html = """<!DOCTYPE html>
     }
 
     header {
-      margin-bottom: 56px;
+      margin-bottom: 40px;
       border-bottom: 2px solid #C8C0B4;
       padding-bottom: 24px;
     }
@@ -107,9 +147,65 @@ html = """<!DOCTYPE html>
       font-style: italic;
     }
 
-    .chart-section {
-      margin-bottom: 72px;
+    /* ── Swatch ── */
+    .swatch-section {
+      margin-bottom: 56px;
+      padding: 24px;
+      background: #FAF7F4;
+      border: 1px solid #C8C0B4;
+      border-radius: 4px;
     }
+
+    .swatch-section h2 {
+      font-size: 14px;
+      font-weight: bold;
+      color: #1C2B3A;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+    }
+
+    .swatch-group { margin-bottom: 16px; }
+    .swatch-group:last-child { margin-bottom: 0; }
+
+    .swatch-group-label {
+      font-size: 10px;
+      font-weight: bold;
+      color: #9AA3AC;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 10px;
+    }
+
+    .swatch-row { display: flex; flex-wrap: wrap; gap: 12px; }
+
+    .swatch-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .swatch-box {
+      width: 44px;
+      height: 44px;
+      border-radius: 4px;
+      border: 1px solid rgba(0,0,0,0.08);
+    }
+
+    .swatch-hex {
+      font-size: 9px;
+      color: #5A6472;
+      font-family: monospace;
+    }
+
+    .swatch-name {
+      font-size: 9px;
+      color: #9AA3AC;
+    }
+
+    /* ── Chart sections ── */
+    .chart-section { margin-bottom: 72px; }
 
     .chart-section h2 {
       font-size: 20px;
@@ -124,14 +220,14 @@ html = """<!DOCTYPE html>
 
     .chart-row {
       display: flex;
-      gap: 24px;
+      gap: 20px;
       align-items: flex-start;
     }
 
     .chart-pane {
       flex: 1;
       background: #FAF7F4;
-      border: 1px solid #E0DAD0;
+      border: 1.5px solid #C8C0B4;
       border-radius: 4px;
       padding: 16px;
       min-width: 0;
@@ -156,7 +252,7 @@ html = """<!DOCTYPE html>
       width: 100% !important;
     }
 
-    @media (max-width: 900px) {
+    @media (max-width: 1100px) {
       .chart-row { flex-direction: column; }
     }
   </style>
@@ -164,9 +260,9 @@ html = """<!DOCTYPE html>
 <body>
   <header>
     <h1>Chart Library</h1>
-    <p>All chart types — interactive Plotly (left) vs. PNG export (right). Theme: a16z-news.</p>
+    <p>All chart types — interactive Plotly / PNG export / SVG export. Theme: a16z-news.</p>
   </header>
-""" + "\n".join(sections) + """
+""" + swatch_section + "\n".join(sections) + """
 </body>
 </html>
 """
