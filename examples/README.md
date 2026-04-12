@@ -90,6 +90,84 @@ Paste the returned string into your HTML `<body>`. Add one `<script src="https:/
 
 ---
 
+## JSON config per chart
+
+Each example has a companion `.json` file containing all chart display parameters.
+`make_fig()` loads it at call time — the Python file only holds the data definition.
+
+```json
+{
+  "x": "year",
+  "y": ["Microsoft", "Meta", "Alphabet", "Amazon", "Oracle"],
+  "title": "Hyperscaler Capex To The Moon",
+  "subtitle": "Combined capital expenditures expected to top $650 billion in 2026",
+  "source": "Bloomberg",
+  "stacked": true,
+  "theme": "a16z-news",
+  "width": 900,
+  "height": 560
+}
+```
+
+Point `make_fig()` at any config file:
+
+```python
+fig = bar.make_fig()                        # uses bar.json next to the file
+fig = bar.make_fig("my_custom_bar.json")    # point at any other config
+```
+
+### Adding a data source (dashboard pattern)
+
+For a dashboard, add a `"data"` block to the JSON. The chart library's
+rendering stays the same — a separate loader resolves the data source to a
+DataFrame before calling the chart function.
+
+```json
+{
+  "data": {
+    "connection": "postgres_prod",
+    "query": "SELECT month, revenue, forecast FROM monthly_revenue WHERE year = 2025"
+  },
+  "x": "month",
+  "y": ["revenue", "forecast"],
+  "title": "Monthly Revenue",
+  "theme": "a16z-news",
+  "width": 900,
+  "height": 560
+}
+```
+
+```python
+import json
+import sqlalchemy as sa
+
+CONNECTIONS = {
+    "postgres_prod": "postgresql://user:pass@host/db",  # keep out of the JSON
+}
+
+def make_fig(cfg_path):
+    cfg = json.load(open(cfg_path))
+    data_cfg = cfg.pop("data", None)
+    if data_cfg:
+        engine = sa.create_engine(CONNECTIONS[data_cfg["connection"]])
+        import pandas as pd
+        df = pd.read_sql(data_cfg["query"], engine)
+    return line(df, **cfg)
+```
+
+**Things that get complicated at dashboard scale:**
+
+- **Credentials** — never in the JSON; use named connections resolved from env vars or a secrets manager
+- **Filter params** — static queries don't support user filters; add Jinja2 templating (`WHERE year = {{ year }}`) and a params block
+- **Caching** — cache query results by (query hash + params), invalidate on TTL or on demand
+
+At the point where you need live filters, multi-user access, and query caching,
+look at [Evidence.dev](https://evidence.dev) (SQL + Markdown → static dashboard),
+[Streamlit](https://streamlit.io), or [Apache Superset](https://superset.apache.org)
+before building that infrastructure yourself.
+
+---
+
 ## Regenerating galleries
 
 From the repo root:
