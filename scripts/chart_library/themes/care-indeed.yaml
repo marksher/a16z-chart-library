@@ -71,10 +71,10 @@ legend:
 # ── Branding ──────────────────────────────────────────────────────────────────
 branding:
   show: true
-  text: "CARE INDEED"
-  # image: "logo.svg"   # replace with your logo file path
-  # image_width: 80
-  # image_height: 20
+  text: "CARE INDEED"   # fallback if image not found
+  image: "care-indeed-logo.svg"   # resolved relative to this YAML file
+  image_width: 100     # 40px height × (120/48 aspect ratio) = 100px wide
+  image_height: 40
   position: "bottom_right"
   color: "#1F1C1B"
   font_size: 9

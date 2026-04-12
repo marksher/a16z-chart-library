@@ -102,4 +102,16 @@ def load_theme(theme) -> Optional[Theme]:
     # Accept only known fields to avoid dataclass errors on forward-compat keys
     valid_fields = {f.name for f in Theme.__dataclass_fields__.values()}
     filtered = {k: v for k, v in data.items() if k in valid_fields}
+
+    # Resolve branding.image relative to the YAML file so themes are portable
+    branding = filtered.get("branding")
+    if isinstance(branding, dict):
+        img = branding.get("image")
+        if img and not img.startswith(("http://", "https://", "data:")):
+            img_path = Path(img)
+            if not img_path.is_absolute():
+                resolved = (path.parent / img_path).resolve()
+                if resolved.exists():
+                    branding["image"] = str(resolved)
+
     return Theme(**filtered)
