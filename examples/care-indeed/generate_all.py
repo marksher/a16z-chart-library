@@ -66,7 +66,7 @@ def encode_file(path: str) -> str:
 
 
 def _extract_snippet(py_path: str) -> str:
-    """Read example source, strip run-boilerplate, and HTML-escape."""
+    """Read example source, strip run-boilerplate, append export pattern, HTML-escape."""
     with open(py_path, encoding="utf-8") as f:
         src = f.read()
 
@@ -79,7 +79,23 @@ def _extract_snippet(py_path: str) -> str:
     src = re.sub(r'\n\nif __name__ == ["\']__main__["\']:.*$', '', src, flags=re.DOTALL)
     src = re.sub(r'\n{3,}', '\n\n', src)
 
-    return _html.escape(src.strip())
+    src = src.strip()
+
+    # Append standard export pattern
+    src += (
+        "\n\n\n# ── Export ──────────────────────────────────────────────\n"
+        "fig = make_fig()\n"
+        'save_png(fig, "chart.png")    # raster PNG  — requires kaleido\n'
+        'save_svg(fig, "chart.svg")    # vector SVG  — requires kaleido\n'
+        'fig.write_html("chart.html")  # interactive HTML — no extra deps\n'
+        "\n"
+        "# Embed PNG in HTML (base64)\n"
+        "import base64\n"
+        'data = base64.b64encode(open("chart.png", "rb").read()).decode()\n'
+        'img_tag = f\'<img src="data:image/png;base64,{data}" />\'\n'
+    )
+
+    return _html.escape(src)
 
 
 # ── Theme swatch ──────────────────────────────────────────────────────────────
@@ -187,8 +203,25 @@ html = """<!DOCTYPE html>
       padding-bottom: 24px;
     }
 
+    .header-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
     header h1 { font-size: 28px; font-weight: bold; color: #1F1C1B; margin-bottom: 6px; }
     header p  { font-size: 13px; color: #7A7470; font-style: italic; }
+
+    .dl-btn {
+      flex-shrink: 0;
+      padding: 8px 16px;
+      background: #FF6B35;
+      color: #FFFAF7;
+      font-family: Montserrat, Roboto, sans-serif;
+      font-size: 12px;
+      font-weight: bold;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+    }
+    .dl-btn:hover { background: #E05520; }
 
     /* ── Swatch ── */
     .swatch-section {
@@ -285,8 +318,13 @@ html = """<!DOCTYPE html>
 </head>
 <body>
   <header>
-    <h1>Chart Library</h1>
-    <p>All chart types — interactive Plotly / PNG export / SVG export. Theme: care-indeed.</p>
+    <div class="header-row">
+      <div>
+        <h1>Chart Library</h1>
+        <p>All chart types — interactive Plotly / PNG export / SVG export. Theme: care-indeed.</p>
+      </div>
+      <button class="dl-btn" onclick="dlPage('chart-library-care-indeed.html')">&#8595; Download HTML</button>
+    </div>
   </header>
 """ + swatch_section + "\n".join(sections) + """
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
@@ -296,6 +334,18 @@ html = """<!DOCTYPE html>
         if (el.open) hljs.highlightAll();
       });
     });
+
+    function dlPage(fname) {
+      var html = '<!DOCTYPE html>' + document.documentElement.outerHTML;
+      var blob = new Blob([html], {type: 'text/html'});
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = fname;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(a.href);
+    }
   </script>
 </body>
 </html>
