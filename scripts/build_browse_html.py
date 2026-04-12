@@ -1,23 +1,39 @@
 #!/usr/bin/env python3
 """
 Generate a single static HTML browser at graphs/browse.html for the current
-source/ and graphs/ trees.
+graphs/ tree.
 """
 
 from __future__ import annotations
 
 import json
 import os
+import re
+from collections import Counter, defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
+
+from bs4 import BeautifulSoup
+from PIL import Image
 
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 REPO_ROOT = SCRIPT_DIR.parent
 OUTPUT_FILE = REPO_ROOT / "graphs" / "browse.html"
-ROOT_NAMES = ("source", "graphs")
+ROOT_NAMES = ("graphs",)
 IMAGE_SUFFIXES = {".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg"}
 TEXT_SUFFIXES = {".json", ".txt", ".md"}
+STRIP_MAX_HEIGHT = 120
+SMALL_PREVIEW_MAX_WIDTH = 400
+SMALL_PREVIEW_MAX_HEIGHT = 400
+FULL_SIZE_MIN_WIDTH = 1000
+FULL_SIZE_MIN_HEIGHT = 700
+DATE_INPUT_FORMATS = (
+    "%Y-%m-%d",
+    "%Y-%m-%dT%H:%M:%S%z",
+    "%Y-%m-%dT%H:%M:%S.%f%z",
+)
+MONTH_PATTERN = re.compile(r"^\d{4}-\d{2}$")
 
 
 def tree_path(path: Path) -> str:
@@ -26,6 +42,351 @@ def tree_path(path: Path) -> str:
 
 def browse_href(path: Path) -> str:
     return os.path.relpath(path, OUTPUT_FILE.parent).replace(os.sep, "/")
+
+
+def normalize_datetime(value: str | None) -> str | None:
+    if not value:
+        return None
+    return value.strip().replace("Z", "+00:00")
+
+
+def normalize_month(value: str | None) -> str | None:
+    if not value:
+        return None
+    if MONTH_PATTERN.match(value.strip()):
+        return value.strip()
+
+    normalized = normalize_datetime(value)
+    for fmt in DATE_INPUT_FORMATS:
+        try:
+            parsed = datetime.strptime(normalized, fmt)
+            return parsed.strftime("%Y-%m")
+        except ValueError:
+            continue
+
+    if len(value) >= 10:
+        try:
+            parsed = datetime.strptime(value[:10], "%Y-%m-%d")
+            return parsed.strftime("%Y-%m")
+        except ValueError:
+            return None
+    return None
+
+
+def format_published_date(value: str | None, fallback_month: str | None = None) -> str | None:
+    if value:
+        normalized = normalize_datetime(value)
+        for fmt in DATE_INPUT_FORMATS:
+            try:
+                parsed = datetime.strptime(normalized, fmt)
+                return parsed.strftime("%B %-d, %Y")
+            except ValueError:
+                continue
+        if len(value) >= 10:
+            try:
+                parsed = datetime.strptime(value[:10], "%Y-%m-%d")
+                return parsed.strftime("%B %-d, %Y")
+            except ValueError:
+                pass
+    if fallback_month:
+        try:
+            parsed = datetime.strptime(fallback_month, "%Y-%m")
+            return parsed.strftime("%B %Y")
+        except ValueError:
+            return fallback_month
+    return None
+
+
+def image_size(path: Path) -> tuple[int, int] | None:
+    try:
+        with Image.open(path) as img:
+            return img.size
+    except Exception:
+        return None
+
+
+def average_rgb(path: Path) -> tuple[int, int, int] | None:
+    try:
+        with Image.open(path) as img:
+            sample = img.convert("RGB").resize((1, 1))
+            rgb = sample.getpixel((0, 0))
+            return int(rgb[0]), int(rgb[1]), int(rgb[2])
+    except Exception:
+        return None
+
+
+def rgb_hex(rgb: tuple[int, int, int] | None) -> str | None:
+    if not rgb:
+        return None
+    return "#{:02x}{:02x}{:02x}".format(*rgb)
+
+
+def image_slug(path: Path) -> str | None:
+    stem = path.stem
+    if "-" not in stem:
+        return None
+    slug, suffix = stem.rsplit("-", 1)
+    return slug if suffix.isdigit() else None
+
+
+def image_index(path: Path) -> int:
+    stem = path.stem
+    if "-" not in stem:
+        return 10_000
+    suffix = stem.rsplit("-", 1)[-1]
+    return int(suffix) if suffix.isdigit() else 10_000
+
+
+def select_primary_title_card(slug: str, preview_paths: set[Path]) -> Path | None:
+    title_dir = REPO_ROOT / "graphs" / "title"
+    candidates = []
+    for path in sorted(title_dir.glob(f"{slug}-*")):
+        if not path.is_file() or path in preview_paths or path.suffix.lower() not in IMAGE_SUFFIXES:
+            continue
+        size = image_size(path)
+        if not size:
+            continue
+        rank = (
+            0 if image_index(path) == 1 else 1,
+            0 if size[1] > STRIP_MAX_HEIGHT and size[0] > SMALL_PREVIEW_MAX_WIDTH else 1,
+            -(size[0] * size[1]),
+            image_index(path),
+            path.name,
+        )
+        candidates.append((rank, path))
+
+    return min(candidates)[1] if candidates else None
+
+
+def classify_title_family(size: tuple[int, int], rgb: tuple[int, int, int]) -> str:
+    width, height = size
+    r, g, b = rgb
+    avg = (r + g + b) / 3
+    aspect = width / max(height, 1)
+
+    if aspect >= 3.0 and height <= 260:
+        if r >= g + 20 and r >= b + 20:
+            return "Warm Banner"
+        if g >= r + 15 and b >= r + 20:
+            return "Cool Banner"
+        return "Compact Banner"
+
+    if avg >= 205:
+        return "Light Minimal Card"
+
+    if b >= g >= r and (g - r) >= 18 and (b - r) >= 35:
+        return "Teal Series Card"
+
+    if max(rgb) - min(rgb) <= 18 and avg <= 70:
+        return "Dark Neutral Card"
+
+    if b > g > r and 48 <= r <= 82 and 68 <= g <= 96:
+        return "Core Slate Card"
+
+    if width >= FULL_SIZE_MIN_WIDTH and height >= 500:
+        return "Expanded Card Variant"
+
+    return "Mixed Variant"
+
+
+def build_title_card_index(preview_paths: set[Path]) -> dict[str, dict]:
+    title_cards = {}
+    for title_path in sorted((REPO_ROOT / "graphs" / "title").glob("*")):
+        if not title_path.is_file() or title_path in preview_paths:
+            continue
+        slug = image_slug(title_path)
+        if not slug or slug in title_cards:
+            continue
+
+        primary = select_primary_title_card(slug, preview_paths)
+        if not primary:
+            continue
+
+        size = image_size(primary)
+        rgb = average_rgb(primary)
+        if not size or not rgb:
+            continue
+
+        title_cards[slug] = {
+            "style_family": classify_title_family(size, rgb),
+            "style_palette": rgb_hex(rgb),
+            "style_dimensions": f"{size[0]}x{size[1]}",
+            "title_card_path": tree_path(primary),
+            "title_card_href": browse_href(primary),
+        }
+
+    return title_cards
+
+
+def parse_article_fields(article_dir: Path, metadata: dict) -> dict | None:
+    index_path = article_dir / "index.html"
+    if not index_path.exists():
+        return None
+
+    title = None
+    published_value = None
+    try:
+        soup = BeautifulSoup(index_path.read_text(encoding="utf-8", errors="replace"), "html.parser")
+    except Exception:
+        return None
+
+    for selector in (
+        ('meta[property="og:title"]', "content"),
+        ('meta[name="twitter:title"]', "content"),
+        ("h1.post-title", None),
+        ("h1", None),
+    ):
+        node = soup.select_one(selector[0])
+        if not node:
+            continue
+        title = node.get(selector[1], "").strip() if selector[1] else node.get_text(" ", strip=True)
+        if title:
+            break
+
+    for selector in (
+        ('meta[property="article:published_time"]', "content"),
+        ("time[datetime]", "datetime"),
+    ):
+        node = soup.select_one(selector[0])
+        if not node:
+            continue
+        published_value = node.get(selector[1], "").strip()
+        if published_value:
+            break
+
+    if not published_value:
+        for script in soup.find_all("script", type="application/ld+json"):
+            raw = script.string or script.get_text()
+            if not raw:
+                continue
+            match = re.search(r'"datePublished"\s*:\s*"([^"]+)"', raw)
+            if match:
+                published_value = match.group(1).strip()
+                break
+
+    published = format_published_date(published_value, metadata.get("published"))
+    if not title and not published:
+        return None
+
+    return {
+        "title": title,
+        "published": published,
+        "published_month": normalize_month(published_value),
+    }
+
+
+def detect_style_threshold(article_index: dict[str, dict]) -> dict:
+    family_counts = Counter(
+        article["style_family"]
+        for article in article_index.values()
+        if article.get("style_family")
+    )
+    dominant_family = family_counts.most_common(1)[0][0] if family_counts else None
+
+    by_month: dict[str, list[str]] = defaultdict(list)
+    for article in article_index.values():
+        month = article.get("published_month")
+        family = article.get("style_family")
+        if month and family:
+            by_month[month].append(family)
+
+    threshold_month = None
+    if dominant_family:
+        for month in sorted(by_month):
+            families = by_month[month]
+            if len(families) < 5:
+                continue
+            month_counts = Counter(families)
+            dominant_share = month_counts.get(dominant_family, 0) / len(families)
+            if len(month_counts) >= 2 and dominant_share < 0.75:
+                threshold_month = month
+                break
+
+    return {
+        "dominant_family": dominant_family,
+        "threshold_month": threshold_month,
+        "threshold_label": format_published_date(None, threshold_month),
+    }
+
+
+def build_article_index(preview_paths: set[Path]) -> tuple[dict[str, dict], dict]:
+    title_card_index = build_title_card_index(preview_paths)
+    candidates: dict[str, tuple[int, dict]] = {}
+    for metadata_path in REPO_ROOT.glob("source/*/*/metadata.json"):
+        article_dir = metadata_path.parent
+        slug = article_dir.name
+        try:
+            metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
+        except Exception:
+            continue
+
+        article = parse_article_fields(article_dir, metadata) or {}
+        article["url"] = metadata.get("url")
+        article["published_month"] = normalize_month(metadata.get("published")) or article.get("published_month")
+        article["published"] = article.get("published") or format_published_date(None, article.get("published_month"))
+        if not article.get("title"):
+            article["title"] = slug.replace("-", " ").title()
+        article.update(title_card_index.get(slug, {}))
+
+        score = 0
+        if article.get("title"):
+            score += 2
+        if article.get("published"):
+            score += 1
+        if article.get("style_family"):
+            score += 1
+        if article_dir.parent.name != "unknown":
+            score += 2
+
+        existing = candidates.get(slug)
+        if not existing or score >= existing[0]:
+            candidates[slug] = (score, article)
+
+    article_index = {slug: article for slug, (_, article) in candidates.items()}
+    style_analysis = detect_style_threshold(article_index)
+
+    threshold_month = style_analysis.get("threshold_month")
+    for article in article_index.values():
+        month = article.get("published_month")
+        if threshold_month and month:
+            article["style_era"] = "Expanded System" if month >= threshold_month else "Anchored System"
+        elif article.get("style_family") and not threshold_month:
+            article["style_era"] = "Anchored System"
+        if style_analysis.get("threshold_label"):
+            article["style_threshold"] = style_analysis["threshold_label"]
+
+    return article_index, style_analysis
+
+
+def collect_preview_images() -> set[Path]:
+    graph_root = REPO_ROOT / "graphs"
+    by_slug: dict[str, list[tuple[Path, int, int]]] = {}
+
+    for path in graph_root.rglob("*"):
+        if not path.is_file() or path == OUTPUT_FILE or path.suffix.lower() not in IMAGE_SUFFIXES:
+            continue
+        slug = image_slug(path)
+        if not slug:
+            continue
+        size = image_size(path)
+        if not size:
+            continue
+        by_slug.setdefault(slug, []).append((path, size[0], size[1]))
+
+    preview_paths: set[Path] = set()
+    for items in by_slug.values():
+        has_full_size = any(
+            width >= FULL_SIZE_MIN_WIDTH or height >= FULL_SIZE_MIN_HEIGHT
+            for _, width, height in items
+        )
+        for path, width, height in items:
+            if height <= STRIP_MAX_HEIGHT:
+                preview_paths.add(path)
+                continue
+            if has_full_size and width <= SMALL_PREVIEW_MAX_WIDTH and height <= SMALL_PREVIEW_MAX_HEIGHT:
+                preview_paths.add(path)
+
+    return preview_paths
 
 
 def file_sort_key(path: Path) -> tuple[int, str]:
@@ -37,7 +398,7 @@ def file_sort_key(path: Path) -> tuple[int, str]:
     return (priority.get(path.name, 2), path.name.lower())
 
 
-def build_item(path: Path) -> dict:
+def build_item(path: Path, article_index: dict[str, dict]) -> dict:
     suffix = path.suffix.lower()
     item = {
         "name": path.name,
@@ -47,6 +408,9 @@ def build_item(path: Path) -> dict:
     }
     if suffix in IMAGE_SUFFIXES:
         item["kind"] = "image"
+        slug = image_slug(path)
+        if slug and slug in article_index:
+            item["article"] = article_index[slug]
     elif suffix in {".html", ".htm"}:
         item["kind"] = "html"
     elif suffix in TEXT_SUFFIXES:
@@ -55,21 +419,25 @@ def build_item(path: Path) -> dict:
     return item
 
 
-def build_tree(path: Path) -> dict:
+def build_tree(path: Path, preview_paths: set[Path], article_index: dict[str, dict]) -> dict:
     children = sorted([child for child in path.iterdir() if child.is_dir()], key=lambda p: p.name.lower())
     node = {
         "name": path.name,
         "path": tree_path(path),
     }
     if not children:
-        items = [build_item(file_path) for file_path in sorted(path.iterdir(), key=file_sort_key) if file_path.is_file()]
+        items = [
+            build_item(file_path, article_index)
+            for file_path in sorted(path.iterdir(), key=file_sort_key)
+            if file_path.is_file() and file_path not in preview_paths
+        ]
         node["leaf"] = True
         node["items"] = items
         node["item_count"] = len(items)
         node["leaf_count"] = 1
         return node
 
-    built_children = [build_tree(child) for child in children]
+    built_children = [build_tree(child, preview_paths, article_index) for child in children]
     node["leaf"] = False
     node["children"] = built_children
     node["leaf_count"] = sum(child["leaf_count"] for child in built_children)
@@ -78,12 +446,15 @@ def build_tree(path: Path) -> dict:
 
 def build_data() -> dict:
     roots = []
+    preview_paths = collect_preview_images()
+    article_index, style_analysis = build_article_index(preview_paths)
     for name in ROOT_NAMES:
         root_path = REPO_ROOT / name
         if root_path.exists():
-            roots.append(build_tree(root_path))
+            roots.append(build_tree(root_path, preview_paths, article_index))
     return {
         "generated_at": datetime.now(timezone.utc).isoformat(),
+        "style_analysis": style_analysis,
         "roots": roots,
     }
 
@@ -145,6 +516,16 @@ def render_html(data: dict) -> str:
       margin: 0 0 18px;
       color: var(--muted);
       font-size: 14px;
+      line-height: 1.45;
+    }}
+    .analysis-note {{
+      margin: 0 0 18px;
+      padding: 12px 14px;
+      border: 1px solid rgba(138, 59, 18, 0.14);
+      border-radius: 14px;
+      background: rgba(255, 247, 235, 0.88);
+      color: var(--muted);
+      font-size: 13px;
       line-height: 1.45;
     }}
     .tree {{
@@ -334,6 +715,56 @@ def render_html(data: dict) -> str:
     .viewer-link a:hover {{
       text-decoration: underline;
     }}
+    .article-meta {{
+      display: none;
+      margin-bottom: 14px;
+      padding: 14px 16px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(255, 251, 243, 0.95);
+    }}
+    .article-meta.visible {{
+      display: block;
+    }}
+    .article-date {{
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 6px;
+    }}
+    .article-title {{
+      font-size: 18px;
+      line-height: 1.25;
+      font-weight: 700;
+      word-break: break-word;
+    }}
+    .article-facts {{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }}
+    .fact-pill {{
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      border: 1px solid rgba(138, 59, 18, 0.16);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.85);
+      font-size: 12px;
+      line-height: 1;
+      color: var(--text);
+      white-space: nowrap;
+    }}
+    .fact-swatch {{
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(29, 26, 20, 0.18);
+      flex: 0 0 auto;
+    }}
     .stage {{
       background: rgba(243, 236, 222, 0.65);
       border: 1px solid var(--line);
@@ -419,6 +850,7 @@ def render_html(data: dict) -> str:
         Use <strong>Left</strong>/<strong>Right</strong> for items and
         <strong>Up</strong>/<strong>Down</strong> for sibling leaf folders.
       </p>
+      <p id="analysis-note" class="analysis-note"></p>
       <div id="tree" class="tree"></div>
     </aside>
     <main class="content">
@@ -443,6 +875,7 @@ def render_html(data: dict) -> str:
             <div id="viewer-path" class="viewer-path"></div>
             <div id="viewer-link" class="viewer-link"></div>
           </div>
+          <div id="article-meta" class="article-meta"></div>
           <div id="stage" class="stage">
             <div class="placeholder">Select a leaf directory to browse its files.</div>
           </div>
@@ -455,12 +888,14 @@ def render_html(data: dict) -> str:
   <script>
     const data = JSON.parse(document.getElementById("tree-data").textContent);
     const treeEl = document.getElementById("tree");
+    const analysisNoteEl = document.getElementById("analysis-note");
     const itemStripEl = document.getElementById("item-strip");
     const panelTitleEl = document.getElementById("panel-title");
     const panelMetaEl = document.getElementById("panel-meta");
     const dirStatusEl = document.getElementById("dir-status");
     const viewerPathEl = document.getElementById("viewer-path");
     const viewerLinkEl = document.getElementById("viewer-link");
+    const articleMetaEl = document.getElementById("article-meta");
     const stageEl = document.getElementById("stage");
     const prevDirEl = document.getElementById("prev-dir");
     const nextDirEl = document.getElementById("next-dir");
@@ -529,6 +964,17 @@ def render_html(data: dict) -> str:
       data.roots.forEach((root) => renderTreeNode(root, treeEl, 0));
     }}
 
+    function renderAnalysisNote() {{
+      const analysis = data.style_analysis || null;
+      if (!analysis || !analysis.threshold_label || !analysis.dominant_family) {{
+        analysisNoteEl.textContent = "Dynamic style analysis updates when the underlying graph set changes.";
+        return;
+      }}
+      analysisNoteEl.textContent =
+        `Dynamic title-style shift detected around ${{analysis.threshold_label}}. ` +
+        `Dominant early family: ${{analysis.dominant_family}}.`;
+    }}
+
     function getCurrentLeaf() {{
       return currentLeafPath ? leafMap.get(currentLeafPath) : null;
     }}
@@ -583,6 +1029,49 @@ def render_html(data: dict) -> str:
       stageEl.appendChild(placeholder);
     }}
 
+    function renderArticleMeta(item) {{
+      articleMetaEl.textContent = "";
+      articleMetaEl.classList.remove("visible");
+      if (!item || item.kind !== "image" || !item.article) {{
+        return;
+      }}
+
+      const bits = [];
+      if (item.article.published) {{
+        bits.push(`<div class="article-date">${{item.article.published}}</div>`);
+      }}
+      if (item.article.title) {{
+        bits.push(`<div class="article-title">${{item.article.title}}</div>`);
+      }}
+      const facts = [];
+      if (item.article.style_era) {{
+        facts.push(`<span class="fact-pill">Era: ${{item.article.style_era}}</span>`);
+      }}
+      if (item.article.style_family) {{
+        facts.push(`<span class="fact-pill">Style: ${{item.article.style_family}}</span>`);
+      }}
+      if (item.article.style_dimensions) {{
+        facts.push(`<span class="fact-pill">Title card: ${{item.article.style_dimensions}}</span>`);
+      }}
+      if (item.article.style_palette) {{
+        facts.push(
+          `<span class="fact-pill"><span class="fact-swatch" style="background:${{item.article.style_palette}}"></span>` +
+          `Palette: ${{item.article.style_palette}}</span>`
+        );
+      }}
+      if (item.article.style_threshold) {{
+        facts.push(`<span class="fact-pill">Shift: ${{item.article.style_threshold}}</span>`);
+      }}
+      if (facts.length) {{
+        bits.push(`<div class="article-facts">${{facts.join("")}}</div>`);
+      }}
+      if (!bits.length) {{
+        return;
+      }}
+      articleMetaEl.innerHTML = bits.join("");
+      articleMetaEl.classList.add("visible");
+    }}
+
     function renderItems(leaf) {{
       itemStripEl.textContent = "";
       leaf.items.forEach((item, index) => {{
@@ -606,6 +1095,8 @@ def render_html(data: dict) -> str:
         dirStatusEl.textContent = "";
         viewerPathEl.textContent = "";
         viewerLinkEl.textContent = "";
+        articleMetaEl.textContent = "";
+        articleMetaEl.classList.remove("visible");
         itemStripEl.textContent = "";
         renderStage(null);
         prevDirEl.disabled = true;
@@ -641,6 +1132,7 @@ def render_html(data: dict) -> str:
       nextItemEl.disabled = leaf.items.length === 0 || currentItemIndex >= leaf.items.length - 1;
 
       renderItems(leaf);
+      renderArticleMeta(item);
       renderStage(item);
     }}
 
@@ -706,6 +1198,7 @@ def render_html(data: dict) -> str:
       }}
     }});
 
+    renderAnalysisNote();
     renderTree();
     if (leafOrder.length) {{
       selectLeaf(leafOrder[0]);

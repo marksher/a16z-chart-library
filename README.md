@@ -1,33 +1,72 @@
 # a16z Chart Library
 
-Crawls [a16z.news](https://www.a16z.news/) for article images, downloads the source articles, and organizes body images by type using OpenAI o4-mini vision classification.
+Scrapes [a16z.news](https://www.a16z.news/), saves article source pages, downloads inline body images, classifies them by visual type, and generates a static browser for the collected library.
 
-## What it does
+## Quick Start
 
-1. **Enumerates** all articles from the site's sitemap
-2. **Downloads** article HTML and metadata into `source/YYYY-MM/<slug>/`
-3. **Tracks** completed article URLs in `progress/completed_articles.txt` so reruns never re-download finished work
-4. **Tracks** in-progress work in `progress/in_progress/` so interrupted articles can be deleted and retried cleanly
-5. **Classifies** each body image with OpenAI o4-mini vision
-6. **Saves** images into `graphs/` organized by type
-7. **Builds** a static browser at `graphs/browse.html`
+### 1. Set up the environment
 
-## Output structure
-
+```bash
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
 ```
+
+Create `.env` with:
+
+```env
+OPENAI_API_KEY=sk-proj-...
+MODEL=o4-mini
+```
+
+### 2. Run the scraper
+
+```bash
+source venv/bin/activate
+python scripts/scrape.py
+```
+
+That will:
+- crawl the a16z.news sitemap
+- save article files under `source/YYYY-MM/<slug>/`
+- save classified images under `graphs/<type>/`
+- record finished articles in `progress/completed_articles.txt`
+
+### 3. Build the browser
+
+```bash
+source venv/bin/activate
+python scripts/build_browse_html.py
+```
+
+This writes [graphs/browse.html](/Users/runners/working/a16z-chart-library/graphs/browse.html), which lets you browse the directory tree on the left and arrow through files in each leaf directory on the right.
+
+## Reference
+
+### Repository layout
+
+```text
+scripts/
+  scrape.py
+  reclassify.py
+  reclass_all.py
+  build_browse_html.py
+  a16z_charts/
+  examples/
+
 progress/
   completed_articles.txt
   in_progress/
-    <article-slug>.json  # ephemeral restart marker for incomplete articles
-  .queue.txt            # reclass_all.py queue
-  .in_progress.txt      # reclass_all.py started items
-  .done.txt             # reclass_all.py finished items
+    <article-slug>.json
+  .queue.txt
+  .in_progress.txt
+  .done.txt
 
 source/
   YYYY-MM/
     <article-slug>/
-      index.html        # full article HTML
-      metadata.json     # url, publish date, image URLs
+      index.html
+      metadata.json
 
 graphs/
   browse.html
@@ -45,66 +84,84 @@ graphs/
   other/
 ```
 
-## Code layout
+### Scraper behavior
 
-```
-scripts/
-  scrape.py
-  reclassify.py
-  reclass_all.py
-  build_browse_html.py
-  a16z_charts/
-  examples/
-```
+`scripts/scrape.py` is restart-safe.
 
-## Setup
+- `progress/completed_articles.txt` is the durable finished manifest.
+- `progress/in_progress/<slug>.json` is the ephemeral in-flight marker.
+- If the scraper restarts and finds an in-progress marker for an article that is not in the completed manifest, it deletes that article’s partial outputs and retries it from scratch.
+- Legacy `source/unknown/` cache entries are preserved and backfilled into the completed manifest when possible.
+
+### Scraper commands
+
+Single-process run:
 
 ```bash
-python -m venv venv
 source venv/bin/activate
-pip install -r requirements.txt
-```
-
-Copy `.env.example` to `.env` and fill in your key, or edit `.env` directly:
-
-```
-OPENAI_API_KEY=sk-proj-...
-MODEL=o4-mini
-```
-
-## Usage
-
-```bash
 python scripts/scrape.py
 ```
 
-The script prints progress as it runs and a summary at the end. `progress/completed_articles.txt`
-is the durable finished-manifest, and `progress/in_progress/<slug>.json` marks an article that
-started but did not finish. On restart, any article with an in-progress marker and no completed
-manifest entry is deleted and re-scraped from scratch.
-
-Legacy cached articles under `source/unknown/` are preserved and backfilled into the completion
-manifest on startup.
-
-For a 15-way sharded run, prepare the manifest and cleanup state once, then launch workers with
-`--skip-backfill`:
+Prepare manifest and cleanup state only:
 
 ```bash
+source venv/bin/activate
+python scripts/scrape.py --prepare-manifest-only
+```
+
+15-way sharded run:
+
+```bash
+source venv/bin/activate
 python scripts/scrape.py --prepare-manifest-only
 python scripts/scrape.py --shard-index 0 --shard-count 15 --skip-backfill
 python scripts/scrape.py --shard-index 1 --shard-count 15 --skip-backfill
 # ...through shard 14
 ```
 
-To regenerate the directory browser:
+When running shards, do the prepare step once first, then launch workers with `--skip-backfill`.
+
+### Classification scripts
+
+Reclassify only `graphs/other/` into the expanded taxonomy:
 
 ```bash
+source venv/bin/activate
+python scripts/reclassify.py
+```
+
+Reclassify every image in `graphs/` into the two-tier structure used by `scripts/reclass_all.py`:
+
+```bash
+source venv/bin/activate
+python scripts/reclass_all.py
+```
+
+That script writes progress files to:
+
+- `progress/.queue.txt`
+- `progress/.in_progress.txt`
+- `progress/.done.txt`
+
+### Browser generator
+
+Regenerate the static browser any time `source/` or `graphs/` changes:
+
+```bash
+source venv/bin/activate
 python scripts/build_browse_html.py
 ```
 
-That writes `graphs/browse.html`.
+The generated browser:
 
-## Requirements
+- lists only the directory structure in the sidebar
+- opens a gallery for each leaf directory
+- supports `Left` / `Right` for items
+- supports `Up` / `Down` for leaf directories
+- caps image preview height at `600px` without upscaling smaller images
+
+### Requirements
 
 - Python 3.12+
-- `OPENAI_API_KEY` in `.env` — used to classify images with `o4-mini`
+- `OPENAI_API_KEY` in `.env`
+- dependencies from `requirements.txt`
