@@ -73,9 +73,9 @@ branding:
   show: true
   text: "CARE INDEED"   # fallback if image not found
   image: "../../../themes/care-indeed/logo.svg"   # resolved relative to this YAML file
-  image_width: 75      # small: 30px height × 2.5 aspect ratio = 75px wide
-  image_height: 30
-  opacity: 0.35
+  image_width: 50      # very small: 20px height × 2.5 aspect ratio = 50px wide
+  image_height: 20
+  opacity: 0.25
   position: "bottom_right"
   color: "#1F1C1B"
   font_size: 9
