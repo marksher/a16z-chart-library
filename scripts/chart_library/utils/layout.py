@@ -211,7 +211,7 @@ def _apply_theme(
                 source=src,
                 xref="paper", yref="paper",
                 x=1, y=0,
-                xanchor="right", yanchor="top",
+                xanchor="right", yanchor="bottom",
                 sizex=sizex,
                 sizey=sizey,
                 sizing="contain",
