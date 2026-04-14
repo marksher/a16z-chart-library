@@ -42,7 +42,7 @@ font_weights:
 
 # ── Layout ────────────────────────────────────────────────────────────────────
 margins:
-  top: 90
+  top: 110
   bottom: 60
   left: 60
   right: 60
@@ -70,11 +70,11 @@ legend:
 
 # ── Branding ──────────────────────────────────────────────────────────────────
 branding:
-  show: false
+  show: true
   text: "CARE INDEED"   # fallback if image not found
-  image: "care-indeed-logo.svg"   # resolved relative to this YAML file
-  image_width: 100     # 40px height × (120/48 aspect ratio) = 100px wide
-  image_height: 40
+  image: "../../../themes/care-indeed/logo.svg"   # resolved relative to this YAML file
+  image_width: 50      # very small: 20px height × 2.5 aspect ratio = 50px wide
+  image_height: 20
   position: "bottom_right"
   color: "#1F1C1B"
   font_size: 9

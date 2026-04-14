@@ -3,7 +3,7 @@
   "x": "pct_change",
   "title": "Percent Change in Homicide in 31 Cities",
   "subtitle": "2019\u20132025",
-  "source": "Council on Criminal Justice",
+  "source": "",
   "positive_label": "Increase",
   "negative_label": "Decrease",
   "sorted": true,

@@ -129,7 +129,7 @@ def _apply_theme(
     # yshift is in pixels relative to y=1 (top of plot area).
     # With margin.top=90 there is 90 px above the plot area for these texts.
     if title:
-        title_yshift = 58 if subtitle else 30
+        title_yshift = 75 if subtitle else 30
         fig.add_annotation(
             x=0, y=1,
             xref="paper", yref="paper",
