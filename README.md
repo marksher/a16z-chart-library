@@ -264,6 +264,82 @@ fig = map_chart(
 
 ---
 
+### Diverging bar chart
+
+```python
+from chart_library import diverging_bar
+
+fig = diverging_bar(
+    df,
+    x="category",
+    y="change",
+    title="Net Sentiment by Topic",
+    subtitle="Positive values = favorable, negative = unfavorable",
+    source="Survey data",
+)
+```
+
+![Diverging bar chart example](examples/a16z-news/diverging_bar.png)
+
+---
+
+### Sparklines
+
+Minimal inline charts with no axes, titles, or legends — designed for tables, dashboards, or tight spaces.
+
+```python
+from chart_library import sparkline_line, sparkline_area, sparkline_bar
+
+# Line sparkline with end dot
+fig = sparkline_line(df, x="date", y="value", end_dot=True, width=200, height=60)
+
+# Filled area sparkline
+fig = sparkline_area(df, x="date", y="value", opacity=0.6, width=200, height=60)
+
+# Bar sparkline
+fig = sparkline_bar(df, x="date", y="value", width=200, height=60)
+```
+
+---
+
+### Stat card
+
+KPI card with a colored header banner and a large number.
+
+```python
+from chart_library import stat_card
+
+fig = stat_card(
+    value="12,847",
+    label="Active Users",
+    width=300,
+    height=200,
+)
+```
+
+![Stat card example](examples/a16z-news/stat_card.png)
+
+---
+
+### Big number
+
+Prominent single-metric display with an optional label.
+
+```python
+from chart_library import big_number
+
+fig = big_number(
+    value="$3.7B",
+    label="Total AI Investment",
+    width=250,
+    height=150,
+)
+```
+
+![Big number example](examples/a16z-news/big_number.png)
+
+---
+
 ## Themes
 
 The visual style — fonts, colors, grid, margins, branding, legend — is fully defined in a YAML file. Swap it out entirely, point to a custom file, or pass `None` to use plain Plotly defaults (no custom fonts, colors, or branding).
@@ -426,7 +502,15 @@ fig.show()
 pip install kaleido
 ```
 
-SVG and PDF export are not currently supported — use HTML for vector-quality interactive output.
+SVG export is also available:
+
+```python
+from chart_library import save_svg
+
+save_svg(fig, "chart.svg")  # vector SVG — requires kaleido
+```
+
+PDF export is not currently supported — use SVG for vector output or HTML for interactive output.
 
 ---
 

@@ -45,6 +45,8 @@ class Theme:
     pie: dict = field(default_factory=dict)
     table: dict = field(default_factory=dict)
     map: dict = field(default_factory=dict)
+    stat_card: dict = field(default_factory=dict)
+    big_number: dict = field(default_factory=dict)
     # Extra YAML keys are silently ignored via __post_init__
     version: str = "1.0"
     description: str = ""

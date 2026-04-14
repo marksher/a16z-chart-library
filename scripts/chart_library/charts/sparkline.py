@@ -121,7 +121,7 @@ def sparkline_area(
             mode="lines",
             fill="tozeroy",
             line=dict(color=color, width=line_w),
-            fillcolor=color.replace("#", "rgba(") if False else _hex_opacity(color, opacity),
+            fillcolor=_hex_opacity(color, opacity),
             showlegend=False,
         ))
 

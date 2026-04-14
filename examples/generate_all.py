@@ -29,6 +29,8 @@ import diverging_bar as diverging_bar_ex
 import sparkline_line as sparkline_line_ex
 import sparkline_area as sparkline_area_ex
 import sparkline_bar as sparkline_bar_ex
+import stat_card as stat_card_ex
+import big_number as big_number_ex
 
 # ── Chart registry: (display name, figure, png, svg, source file) ─────────────
 CHARTS = [
@@ -43,6 +45,8 @@ CHARTS = [
     ("Sparkline Line",sparkline_line_ex.make_fig(),  "sparkline_line.png", "sparkline_line.svg", "sparkline_line.py"),
     ("Sparkline Area",sparkline_area_ex.make_fig(),  "sparkline_area.png", "sparkline_area.svg", "sparkline_area.py"),
     ("Sparkline Bar", sparkline_bar_ex.make_fig(),   "sparkline_bar.png",  "sparkline_bar.svg",  "sparkline_bar.py"),
+    ("Stat Card",    stat_card_ex.make_fig(),       "stat_card.png",      "stat_card.svg",      "stat_card.py"),
+    ("Big Number",   big_number_ex.make_fig(),       "big_number.png",     "big_number.svg",     "big_number.py"),
 ]
 
 

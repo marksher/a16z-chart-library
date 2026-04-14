@@ -118,3 +118,12 @@ map:
   land_color: "#F0EDE8"
   ocean_color: "#D9D6D5"
   border_color: "#C0BBB9"
+
+stat_card:
+  value_font_size: 48
+  label_font_size: 14
+  border_radius: 12
+
+big_number:
+  value_font_size: 56
+  label_font_size: 13
