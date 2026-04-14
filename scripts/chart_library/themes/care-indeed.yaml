@@ -75,6 +75,7 @@ branding:
   image: "../../../themes/care-indeed/logo.svg"   # resolved relative to this YAML file
   image_width: 75      # small: 30px height × 2.5 aspect ratio = 75px wide
   image_height: 30
+  opacity: 0.35
   position: "bottom_right"
   color: "#1F1C1B"
   font_size: 9
