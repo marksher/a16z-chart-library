@@ -190,27 +190,47 @@ def _apply_theme(
             p = _P(image_path)
             if p.exists():
                 ext = p.suffix.lower().lstrip(".")
-                mime = {
-                    "svg": "image/svg+xml",
-                    "png": "image/png",
-                    "jpg": "image/jpeg",
-                    "jpeg": "image/jpeg",
-                }.get(ext, "image/png")
-                src = f"data:{mime};base64,{_b64.b64encode(p.read_bytes()).decode()}"
+                if ext == "svg":
+                    # kaleido cannot render SVG data URIs in layout images;
+                    # convert to PNG so static exports (PNG/SVG) work correctly.
+                    try:
+                        import cairosvg as _csvg
+                        png_bytes = _csvg.svg2png(
+                            file_obj=open(p, "rb"),
+                            output_width=t.branding.get("image_width", 60) * 2,
+                            output_height=t.branding.get("image_height", 20) * 2,
+                        )
+                        src = f"data:image/png;base64,{_b64.b64encode(png_bytes).decode()}"
+                    except ImportError:
+                        src = f"data:image/svg+xml;base64,{_b64.b64encode(p.read_bytes()).decode()}"
+                else:
+                    mime = {"png": "image/png", "jpg": "image/jpeg", "jpeg": "image/jpeg"}.get(ext, "image/png")
+                    src = f"data:{mime};base64,{_b64.b64encode(p.read_bytes()).decode()}"
             else:
                 src = image_path  # treat as URL
 
             # sizex/sizey are paper fractions relative to the plot area;
             # convert the pixel spec using the figure's plot-area dimensions.
-            plot_w = width - t.margins.get("left", 60) - t.margins.get("right", 50)
-            plot_h = height - t.margins.get("top", 90) - t.margins.get("bottom", 60)
-            sizex = t.branding.get("image_width", 60) / max(plot_w, 1)
-            sizey = t.branding.get("image_height", 20) / max(plot_h, 1)
+            r_margin = t.margins.get("right", 60)
+            b_margin = t.margins.get("bottom", 60)
+            plot_w = width - t.margins.get("left", 60) - r_margin
+            plot_h = height - t.margins.get("top", 110) - b_margin
+            logo_w = t.branding.get("image_width", 60)
+            logo_h = t.branding.get("image_height", 20)
+            sizex = logo_w / max(plot_w, 1)
+            sizey = logo_h / max(plot_h, 1)
+
+            # Anchor the logo's bottom-right corner 10px inside the figure edges,
+            # placing it in the margin area (outside the plot, inside the figure).
+            # Negative x/y paper coords address the margin area; kaleido renders them.
+            pad = 10
+            x = 1 + (r_margin - pad) / max(plot_w, 1)
+            y = -(b_margin - pad) / max(plot_h, 1)
 
             fig.add_layout_image(
                 source=src,
                 xref="paper", yref="paper",
-                x=1, y=0,
+                x=x, y=y,
                 xanchor="right", yanchor="bottom",
                 sizex=sizex,
                 sizey=sizey,
