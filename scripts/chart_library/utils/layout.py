@@ -34,7 +34,14 @@ def _apply_theme(
     fig.update_layout(width=width, height=height)
 
     if theme is None:
-        # Plotly defaults — just honour the size
+        # Plotly defaults — use built-in title/subtitle, no custom styling
+        title_parts = []
+        if title:
+            title_parts.append(f"<b>{title}</b>")
+        if subtitle:
+            title_parts.append(f"<span style='font-size:13px;color:#666'>{subtitle}</span>")
+        if title_parts:
+            fig.update_layout(title_text="<br>".join(title_parts))
         return fig
 
     t = theme
@@ -129,7 +136,7 @@ def _apply_theme(
     # yshift is in pixels relative to y=1 (top of plot area).
     # With margin.top=90 there is 90 px above the plot area for these texts.
     if title:
-        title_yshift = 75 if subtitle else 30
+        title_yshift = 62 if subtitle else 30
         fig.add_annotation(
             x=0, y=1,
             xref="paper", yref="paper",
