@@ -26,23 +26,28 @@ pip install -e .
 
 ---
 
-## See it first
+## Galleries
 
-Open the gallery to see all chart types side by side — interactive Plotly on the left, PNG export on the right:
+| Theme | Preview | Download |
+|-------|---------|----------|
+| a16z-news | [Open preview](examples/a16z-news/all.html) | [Download HTML](examples/a16z-news/all.html) |
+| care-indeed | [Open preview](examples/care-indeed/all.html) | [Download HTML](examples/care-indeed/all.html) |
+| quitemailingyourself | [Open preview](examples/quitemailingyourself/all.html) | [Download HTML](examples/quitemailingyourself/all.html) |
+
+Each gallery also has a **Download HTML** button in the top-right corner that saves the entire gallery as a standalone file.
+
+### Create a new theme from any website
 
 ```bash
-open examples/a16z-news/all.html
+python scripts/create_theme.py
 ```
 
-To regenerate all example outputs (PNGs + HTML files):
+Prompts for a URL, scrapes colors and fonts, and generates a complete theme with all chart examples and a gallery page.
+
+### Regenerate examples
 
 ```bash
-python examples/a16z-news/bar.py
-python examples/a16z-news/line.py
-# … or run them all:
 for f in examples/a16z-news/*.py; do python "$f"; done
-
-# Rebuild the all.html gallery:
 python examples/generate_all.py
 ```
 
@@ -539,8 +544,11 @@ PDF export is not currently supported — use SVG for vector output or HTML for 
 
 ```
 examples/
-  a16z-news/         ← Example scripts + output PNGs + all.html gallery (open this first)
+  a16z-news/         ← Example scripts + output PNGs + all.html gallery
+  care-indeed/       ← Care Indeed brand theme examples
+  quitemailingyourself/ ← Auto-generated theme from quitemailingyourself.com
   default/           ← Same examples rendered with theme=None (plain Plotly)
+  index.html         ← Links to all theme galleries
   generate_all.py    ← Rebuilds examples/a16z-news/all.html
 
 graphs/              ← Scraped chart images organized by type (bar/, line/, area/, etc.)
@@ -550,6 +558,7 @@ progress/            ← Scraper state: completed_articles.txt + in_progress/ ma
 
 scripts/
   chart_library/     ← The pip-installable Python package (charts/, themes/, utils/)
+  create_theme.py    ← Generate a new theme from any website URL
   scrape.py          ← Web scraper that populates source/ and graphs/
   build_browse_html.py ← Regenerates graphs/browse.html
   reclassify.py      ← Reclassifies images in graphs/other/
