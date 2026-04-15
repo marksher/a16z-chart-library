@@ -1,28 +1,28 @@
 name: quitemailingyourself
 version: "1.0"
-description: Auto-generated theme from website color extraction
+description: Theme extracted from quitemailingyourself.com — green/magenta palette, lavender background
 
 # ── Background ────────────────────────────────────────────────────────────────
-background: "#FAFAFA"
-plot_background: "#FAFAFA"
+background: "#F7F2F8"
+plot_background: "#F7F2F8"
 
 # ── Text colors ───────────────────────────────────────────────────────────────
 text:
-  title: "#111111"
-  subtitle: "#585858"
+  title: "#191420"
+  subtitle: "#444444"
   axis: "#888888"
   source: "#888888"
-  label: "#585858"
+  label: "#444444"
 
 # ── Data palette ──────────────────────────────────────────────────────────────
 palette:
-  - "#7C3AED"
-  - "#F59E0B"
-  - "#065F46"
-  - "#A7F3D0"
-  - "#991B1B"
-  - "#B7638F"
-  - "#1E40AF"
+  - "#1B6B3A"   # dark green — brand primary
+  - "#8F1E6A"   # dark magenta
+  - "#C0392B"   # red
+  - "#B4648F"   # mauve
+  - "#22242E"   # dark navy
+  - "#66124C"   # deep purple
+  - "#24292E"   # charcoal
 
 # ── Typography ────────────────────────────────────────────────────────────────
 fonts:
@@ -49,7 +49,7 @@ margins:
 
 # ── Grid ──────────────────────────────────────────────────────────────────────
 grid:
-  color: "#EBEBEB"
+  color: "#E9E3EC"
   width: 1
   horizontal: true
   vertical: false
@@ -58,7 +58,7 @@ grid:
 spines:
   top: false
   right: false
-  color: "#DCDCDC"
+  color: "#D5CDD9"
   width: 1
 
 # ── Legend ────────────────────────────────────────────────────────────────────
@@ -73,7 +73,7 @@ branding:
   show: true
   text: "QUITEMAILINGYOURSELF"
   position: "bottom_right"
-  color: "#111111"
+  color: "#191420"
   font_size: 10
   font_weight: "bold"
 
@@ -106,15 +106,15 @@ pie:
   hole: 0.55
 
 table:
-  header_background: "#111111"
+  header_background: "#191420"
   header_text: "#FFFFFF"
-  highlight_color: "#A7F3D0"
-  border_color: "#EBEBEB"
+  highlight_color: "#E9C3E9"
+  border_color: "#E9E3EC"
 
 map:
-  land_color: "#F0F0F0"
-  ocean_color: "#E6E6E6"
-  border_color: "#DCDCDC"
+  land_color: "#F0EBF3"
+  ocean_color: "#E4DDE8"
+  border_color: "#D5CDD9"
 
 stat_card:
   value_font_size: 48
@@ -126,7 +126,7 @@ big_number:
   label_font_size: 13
 
 gauge:
-  arc_bg_color: "#EBEBEB"
+  arc_bg_color: "#E9E3EC"
   value_font_size: 32
   label_font_size: 13
   min_max_font_size: 11
