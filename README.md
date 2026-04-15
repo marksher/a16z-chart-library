@@ -33,7 +33,7 @@ pip install -e .
 | a16z-news | [Open preview](examples/a16z-news/all.html) | [Download HTML](examples/a16z-news/all.html) |
 | care-indeed | [Open preview](examples/care-indeed/all.html) | [Download HTML](examples/care-indeed/all.html) |
 | quitemailingyourself | [Open preview](examples/quitemailingyourself/all.html) | [Download HTML](examples/quitemailingyourself/all.html) |
-| default | Plain Plotly defaults (`theme=None`) | [Browse files](examples/default/) |
+| default | [Open preview](examples/default/all.html) | [Download HTML](examples/default/all.html) |
 
 Each gallery also has a **Download HTML** button in the top-right corner that saves the entire gallery as a standalone file.
 

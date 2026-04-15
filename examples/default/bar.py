@@ -1,18 +1,29 @@
-"""Bar chart — Plotly default theme (theme=None)."""
-import os, sys
+"""Bar chart example — default theme (Plotly defaults)."""
+
+import os
+import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../..", "scripts"))
-import pandas as pd
-from chart_library import bar, save_png
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../a16z-news"))
+
+import json
+import bar as _src
+from chart_library import bar, save_png, save_svg
 
 OUT = os.path.dirname(__file__)
 
-df = pd.DataFrame({
-    "company": ["Microsoft", "Meta", "Alphabet", "Amazon", "Oracle"],
-    "capex_b": [130, 55, 105, 175, 28],
-})
-fig = bar(df, x="company", y="capex_b",
-          title="Hyperscaler Capex 2024", subtitle="Billions USD",
-          source="Bloomberg", theme=None, width=800, height=480)
-save_png(fig, os.path.join(OUT, "bar.png"))
-fig.write_html(os.path.join(OUT, "bar.html"))
-print("bar.png written")
+
+_CFG = os.path.join(os.path.dirname(__file__), "bar.json")
+
+
+def make_fig(cfg_path=_CFG):
+    with open(cfg_path) as f:
+        cfg = json.load(f)
+    return bar(_src._df2, **cfg)
+
+
+if __name__ == "__main__":
+    fig = make_fig()
+    save_png(fig, os.path.join(OUT, "bar_stacked.png"))
+    save_svg(fig, os.path.join(OUT, "bar_stacked.svg"))
+    fig.write_html(os.path.join(OUT, "bar_stacked.html"))
+    print("bar_stacked.png + bar_stacked.svg written")

@@ -1,19 +1,32 @@
-"""Scatter chart — Plotly default theme (theme=None)."""
-import os, sys
+"""Scatter chart example — default theme (Plotly defaults)."""
+
+import os
+import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../..", "scripts"))
-import pandas as pd, numpy as np
-from chart_library import scatter, save_png
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../a16z-news"))
+
+import json
+import scatter as _src
+from chart_library import scatter, save_png, save_svg
 
 OUT = os.path.dirname(__file__)
-rng = np.random.default_rng(7)
-df = pd.DataFrame({
-    "cost":  rng.uniform(0.01, 50, 30),
-    "perf":  rng.uniform(10, 95, 30),
-    "type":  (["Open"] * 15) + (["Closed"] * 15),
-})
-fig = scatter(df, x="cost", y="perf",
-              title="Model Cost vs. Performance",
-              color_col="type", source="Benchmark data", theme=None)
-save_png(fig, os.path.join(OUT, "scatter.png"))
-fig.write_html(os.path.join(OUT, "scatter.html"))
-print("scatter.png written")
+
+
+_CFG = os.path.join(os.path.dirname(__file__), "scatter.json")
+
+
+def make_fig(cfg_path=_CFG):
+    with open(cfg_path) as f:
+        cfg = json.load(f)
+    fig = scatter(_src._df, **cfg)
+    fig.update_xaxes(type="log", title_text="Cost per 1M Tokens ($)")
+    fig.update_yaxes(type="log", title_text="Total Usage in Millions of Tokens")
+    return fig
+
+
+if __name__ == "__main__":
+    fig = make_fig()
+    save_png(fig, os.path.join(OUT, "scatter.png"))
+    save_svg(fig, os.path.join(OUT, "scatter.svg"))
+    fig.write_html(os.path.join(OUT, "scatter.html"))
+    print("scatter.png + scatter.svg written")

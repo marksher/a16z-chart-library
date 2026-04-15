@@ -1,18 +1,29 @@
-"""Pie / donut chart — Plotly default theme (theme=None)."""
-import os, sys
+"""Pie / donut chart example — default theme (Plotly defaults)."""
+
+import os
+import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../..", "scripts"))
-import pandas as pd
-from chart_library import pie, save_png
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../a16z-news"))
+
+import json
+import pie as _src
+from chart_library import pie, save_png, save_svg
 
 OUT = os.path.dirname(__file__)
 
-df = pd.DataFrame({
-    "category": ["Foundation Models", "Developer Tools", "Enterprise AI",
-                  "Consumer AI", "Infrastructure", "Other"],
-    "share": [38, 22, 18, 12, 7, 3],
-})
-fig = pie(df, labels="category", values="share",
-          title="AI Investment by Category", source="PitchBook", theme=None)
-save_png(fig, os.path.join(OUT, "pie.png"))
-fig.write_html(os.path.join(OUT, "pie.html"))
-print("pie.png written")
+
+_CFG = os.path.join(os.path.dirname(__file__), "pie.json")
+
+
+def make_fig(cfg_path=_CFG):
+    with open(cfg_path) as f:
+        cfg = json.load(f)
+    return pie(_src._df, **cfg)
+
+
+if __name__ == "__main__":
+    fig = make_fig()
+    save_png(fig, os.path.join(OUT, "pie.png"))
+    save_svg(fig, os.path.join(OUT, "pie.svg"))
+    fig.write_html(os.path.join(OUT, "pie.html"))
+    print("pie.png + pie.svg written")

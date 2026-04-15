@@ -1,19 +1,29 @@
-"""Line chart — Plotly default theme (theme=None)."""
-import os, sys
+"""Line chart example — default theme (Plotly defaults)."""
+
+import os
+import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../..", "scripts"))
-import pandas as pd
-from chart_library import line, save_png
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../a16z-news"))
+
+import json
+import line as _src
+from chart_library import line, save_png, save_svg
 
 OUT = os.path.dirname(__file__)
 
-df = pd.DataFrame({
-    "date": ["2022Q1","2022Q3","2023Q1","2023Q3","2024Q1","2024Q3","2025Q1"],
-    "Proprietary": [10, 15, 25, 40, 55, 72, 88],
-    "Open Weight":  [4,  8,  14, 28, 45, 65, 82],
-})
-fig = line(df, x="date", y=["Proprietary", "Open Weight"],
-           title="Model Benchmark Progress", source="Artificial Analysis",
-           end_labels=False, theme=None)
-save_png(fig, os.path.join(OUT, "line.png"))
-fig.write_html(os.path.join(OUT, "line.html"))
-print("line.png written")
+
+_CFG = os.path.join(os.path.dirname(__file__), "line.json")
+
+
+def make_fig(cfg_path=_CFG):
+    with open(cfg_path) as f:
+        cfg = json.load(f)
+    return line(_src._df, **cfg)
+
+
+if __name__ == "__main__":
+    fig = make_fig()
+    save_png(fig, os.path.join(OUT, "line.png"))
+    save_svg(fig, os.path.join(OUT, "line.svg"))
+    fig.write_html(os.path.join(OUT, "line.html"))
+    print("line.png + line.svg written")

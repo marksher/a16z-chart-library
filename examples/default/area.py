@@ -1,19 +1,29 @@
-"""Area chart — Plotly default theme (theme=None)."""
-import os, sys
+"""Area chart example — default theme (Plotly defaults)."""
+
+import os
+import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../..", "scripts"))
-import pandas as pd
-from chart_library import area, save_png
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../a16z-news"))
+
+import json
+import area as _src
+from chart_library import area, save_png, save_svg
 
 OUT = os.path.dirname(__file__)
 
-df = pd.DataFrame({
-    "year": [2019, 2020, 2021, 2022, 2023, 2024, 2025],
-    "Hyperscaler": [100, 130, 175, 240, 310, 420, 570],
-    "Enterprise":  [200, 210, 220, 230, 240, 250, 260],
-    "Colocation":  [150, 155, 162, 168, 174, 180, 186],
-})
-fig = area(df, x="year", y=["Hyperscaler", "Enterprise", "Colocation"],
-           title="Data Center Capacity Growth", source="Synergy Research", theme=None)
-save_png(fig, os.path.join(OUT, "area.png"))
-fig.write_html(os.path.join(OUT, "area.html"))
-print("area.png written")
+
+_CFG = os.path.join(os.path.dirname(__file__), "area.json")
+
+
+def make_fig(cfg_path=_CFG):
+    with open(cfg_path) as f:
+        cfg = json.load(f)
+    return area(_src._df, **cfg)
+
+
+if __name__ == "__main__":
+    fig = make_fig()
+    save_png(fig, os.path.join(OUT, "area.png"))
+    save_svg(fig, os.path.join(OUT, "area.svg"))
+    fig.write_html(os.path.join(OUT, "area.html"))
+    print("area.png + area.svg written")

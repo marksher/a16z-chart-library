@@ -12,7 +12,7 @@ Each gallery is a single self-contained HTML file (all images embedded as base64
 | **a16z-news** | [Open preview](https://raw.githack.com/marksher/a16z-chart-library/main/examples/a16z-news/all.html) | [Download HTML](https://raw.githubusercontent.com/marksher/a16z-chart-library/main/examples/a16z-news/all.html) |
 | **care-indeed** | [Open preview](https://raw.githack.com/marksher/a16z-chart-library/main/examples/care-indeed/all.html) | [Download HTML](https://raw.githubusercontent.com/marksher/a16z-chart-library/main/examples/care-indeed/all.html) |
 | **quitemailingyourself** | [Open preview](https://raw.githack.com/marksher/a16z-chart-library/main/examples/quitemailingyourself/all.html) | [Download HTML](https://raw.githubusercontent.com/marksher/a16z-chart-library/main/examples/quitemailingyourself/all.html) |
-| **default** | Plain Plotly defaults (`theme=None`) | [Browse files](default/) |
+| **default** | [Open preview](https://raw.githack.com/marksher/a16z-chart-library/main/examples/default/all.html) | [Download HTML](https://raw.githubusercontent.com/marksher/a16z-chart-library/main/examples/default/all.html) |
 
 Each gallery also has a **↓ Download HTML** button in the top-right corner that saves
 the current page (including all embedded images) as a standalone file.
@@ -21,22 +21,22 @@ the current page (including all embedded images) as a standalone file.
 
 ## Chart Types
 
-| Chart | a16z-news source | care-indeed source |
-|-------|-----------------|-------------------|
-| Bar (stacked) | [bar.py](a16z-news/bar.py) | [bar.py](care-indeed/bar.py) |
-| Line | [line.py](a16z-news/line.py) | [line.py](care-indeed/line.py) |
-| Area | [area.py](a16z-news/area.py) | [area.py](care-indeed/area.py) |
-| Scatter | [scatter.py](a16z-news/scatter.py) | [scatter.py](care-indeed/scatter.py) |
-| Pie | [pie.py](a16z-news/pie.py) | [pie.py](care-indeed/pie.py) |
-| Table | [table.py](a16z-news/table.py) | [table.py](care-indeed/table.py) |
-| Map | [map.py](a16z-news/map.py) | [map.py](care-indeed/map.py) |
-| Diverging Bar | [diverging_bar.py](a16z-news/diverging_bar.py) | [diverging_bar.py](care-indeed/diverging_bar.py) |
-| Sparkline Line | [sparkline_line.py](a16z-news/sparkline_line.py) | [sparkline_line.py](care-indeed/sparkline_line.py) |
-| Sparkline Area | [sparkline_area.py](a16z-news/sparkline_area.py) | [sparkline_area.py](care-indeed/sparkline_area.py) |
-| Sparkline Bar | [sparkline_bar.py](a16z-news/sparkline_bar.py) | [sparkline_bar.py](care-indeed/sparkline_bar.py) |
-| Stat Card | [stat_card.py](a16z-news/stat_card.py) | [stat_card.py](care-indeed/stat_card.py) |
-| Big Number | [big_number.py](a16z-news/big_number.py) | [big_number.py](care-indeed/big_number.py) |
-| Gauge | [gauge.py](a16z-news/gauge.py) | [gauge.py](care-indeed/gauge.py) |
+| Chart | a16z-news | care-indeed | quitemailingyourself | default |
+|-------|-----------|-------------|---------------------|---------|
+| Bar (stacked) | [bar.py](a16z-news/bar.py) | [bar.py](care-indeed/bar.py) | [bar.py](quitemailingyourself/bar.py) | [bar.py](default/bar.py) |
+| Line | [line.py](a16z-news/line.py) | [line.py](care-indeed/line.py) | [line.py](quitemailingyourself/line.py) | [line.py](default/line.py) |
+| Area | [area.py](a16z-news/area.py) | [area.py](care-indeed/area.py) | [area.py](quitemailingyourself/area.py) | [area.py](default/area.py) |
+| Scatter | [scatter.py](a16z-news/scatter.py) | [scatter.py](care-indeed/scatter.py) | [scatter.py](quitemailingyourself/scatter.py) | [scatter.py](default/scatter.py) |
+| Pie | [pie.py](a16z-news/pie.py) | [pie.py](care-indeed/pie.py) | [pie.py](quitemailingyourself/pie.py) | [pie.py](default/pie.py) |
+| Table | [table.py](a16z-news/table.py) | [table.py](care-indeed/table.py) | [table.py](quitemailingyourself/table.py) | [table.py](default/table.py) |
+| Map | [map.py](a16z-news/map.py) | [map.py](care-indeed/map.py) | [map.py](quitemailingyourself/map.py) | [map.py](default/map.py) |
+| Diverging Bar | [diverging_bar.py](a16z-news/diverging_bar.py) | [diverging_bar.py](care-indeed/diverging_bar.py) | [diverging_bar.py](quitemailingyourself/diverging_bar.py) | [diverging_bar.py](default/diverging_bar.py) |
+| Sparkline Line | [sparkline_line.py](a16z-news/sparkline_line.py) | [sparkline_line.py](care-indeed/sparkline_line.py) | [sparkline_line.py](quitemailingyourself/sparkline_line.py) | [sparkline_line.py](default/sparkline_line.py) |
+| Sparkline Area | [sparkline_area.py](a16z-news/sparkline_area.py) | [sparkline_area.py](care-indeed/sparkline_area.py) | [sparkline_area.py](quitemailingyourself/sparkline_area.py) | [sparkline_area.py](default/sparkline_area.py) |
+| Sparkline Bar | [sparkline_bar.py](a16z-news/sparkline_bar.py) | [sparkline_bar.py](care-indeed/sparkline_bar.py) | [sparkline_bar.py](quitemailingyourself/sparkline_bar.py) | [sparkline_bar.py](default/sparkline_bar.py) |
+| Stat Card | [stat_card.py](a16z-news/stat_card.py) | [stat_card.py](care-indeed/stat_card.py) | [stat_card.py](quitemailingyourself/stat_card.py) | [stat_card.py](default/stat_card.py) |
+| Big Number | [big_number.py](a16z-news/big_number.py) | [big_number.py](care-indeed/big_number.py) | [big_number.py](quitemailingyourself/big_number.py) | [big_number.py](default/big_number.py) |
+| Gauge | [gauge.py](a16z-news/gauge.py) | [gauge.py](care-indeed/gauge.py) | [gauge.py](quitemailingyourself/gauge.py) | [gauge.py](default/gauge.py) |
 
 ---
 
@@ -181,6 +181,7 @@ From the repo root:
 python examples/generate_all.py                        # a16z-news
 python examples/care-indeed/generate_all.py            # care-indeed
 python examples/quitemailingyourself/generate_all.py   # quitemailingyourself
+python examples/default/generate_all.py                # default (Plotly defaults)
 ```
 
 ### Create a new theme from any website
