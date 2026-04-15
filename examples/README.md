@@ -11,6 +11,7 @@ Each gallery is a single self-contained HTML file (all images embedded as base64
 |-------|---------|----------|
 | **a16z-news** | [Open preview](https://raw.githack.com/marksher/a16z-chart-library/main/examples/a16z-news/all.html) | [Download HTML](https://raw.githubusercontent.com/marksher/a16z-chart-library/main/examples/a16z-news/all.html) |
 | **care-indeed** | [Open preview](https://raw.githack.com/marksher/a16z-chart-library/main/examples/care-indeed/all.html) | [Download HTML](https://raw.githubusercontent.com/marksher/a16z-chart-library/main/examples/care-indeed/all.html) |
+| **quitemailingyourself** | [Open preview](https://raw.githack.com/marksher/a16z-chart-library/main/examples/quitemailingyourself/all.html) | [Download HTML](https://raw.githubusercontent.com/marksher/a16z-chart-library/main/examples/quitemailingyourself/all.html) |
 
 Each gallery also has a **↓ Download HTML** button in the top-right corner that saves
 the current page (including all embedded images) as a standalone file.
@@ -32,6 +33,9 @@ the current page (including all embedded images) as a standalone file.
 | Sparkline Line | [sparkline_line.py](a16z-news/sparkline_line.py) | [sparkline_line.py](care-indeed/sparkline_line.py) |
 | Sparkline Area | [sparkline_area.py](a16z-news/sparkline_area.py) | [sparkline_area.py](care-indeed/sparkline_area.py) |
 | Sparkline Bar | [sparkline_bar.py](a16z-news/sparkline_bar.py) | [sparkline_bar.py](care-indeed/sparkline_bar.py) |
+| Stat Card | [stat_card.py](a16z-news/stat_card.py) | [stat_card.py](care-indeed/stat_card.py) |
+| Big Number | [big_number.py](a16z-news/big_number.py) | [big_number.py](care-indeed/big_number.py) |
+| Gauge | [gauge.py](a16z-news/gauge.py) | [gauge.py](care-indeed/gauge.py) |
 
 ---
 
@@ -173,6 +177,13 @@ before building that infrastructure yourself.
 From the repo root:
 
 ```bash
-python examples/generate_all.py           # a16z-news → examples/a16z-news/all.html
-python examples/care-indeed/generate_all.py  # care-indeed → examples/care-indeed/all.html
+python examples/generate_all.py                        # a16z-news
+python examples/care-indeed/generate_all.py            # care-indeed
+python examples/quitemailingyourself/generate_all.py   # quitemailingyourself
+```
+
+### Create a new theme from any website
+
+```bash
+python scripts/create_theme.py
 ```
