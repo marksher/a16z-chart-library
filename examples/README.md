@@ -11,7 +11,7 @@ Each gallery is a single self-contained HTML file (all images embedded as base64
 |-------|---------|----------|
 | **default** | [Open preview](https://raw.githack.com/marksher/a16z-chart-library/main/examples/default/all.html) | [Download HTML](https://raw.githubusercontent.com/marksher/a16z-chart-library/main/examples/default/all.html) |
 | **care-indeed** | [Open preview](https://raw.githack.com/marksher/a16z-chart-library/main/examples/care-indeed/all.html) | [Download HTML](https://raw.githubusercontent.com/marksher/a16z-chart-library/main/examples/care-indeed/all.html) |
-| **default** | [Open preview](https://raw.githack.com/marksher/a16z-chart-library/main/examples/default/all.html) | [Download HTML](https://raw.githubusercontent.com/marksher/a16z-chart-library/main/examples/default/all.html) |
+| **plotly-default** | [Open preview](https://raw.githack.com/marksher/a16z-chart-library/main/examples/plotly-default/all.html) | [Download HTML](https://raw.githubusercontent.com/marksher/a16z-chart-library/main/examples/plotly-default/all.html) |
 | **quitemailingyourself** | [Open preview](https://raw.githack.com/marksher/a16z-chart-library/main/examples/quitemailingyourself/all.html) | [Download HTML](https://raw.githubusercontent.com/marksher/a16z-chart-library/main/examples/quitemailingyourself/all.html) |
 
 Each gallery also has a **↓ Download HTML** button in the top-right corner that saves
@@ -21,22 +21,22 @@ the current page (including all embedded images) as a standalone file.
 
 ## Chart Types
 
-| Chart | default | care-indeed | default | quitemailingyourself |
+| Chart | default | care-indeed | plotly-default | quitemailingyourself |
 |------------------|-------------|---------|----------------------|
-| Bar (stacked) | [bar.py](default/bar.py) | [bar.py](care-indeed/bar.py) | [bar.py](default/bar.py) | [bar.py](quitemailingyourself/bar.py) |
-| Line | [line.py](default/line.py) | [line.py](care-indeed/line.py) | [line.py](default/line.py) | [line.py](quitemailingyourself/line.py) |
-| Area | [area.py](default/area.py) | [area.py](care-indeed/area.py) | [area.py](default/area.py) | [area.py](quitemailingyourself/area.py) |
-| Scatter | [scatter.py](default/scatter.py) | [scatter.py](care-indeed/scatter.py) | [scatter.py](default/scatter.py) | [scatter.py](quitemailingyourself/scatter.py) |
-| Pie | [pie.py](default/pie.py) | [pie.py](care-indeed/pie.py) | [pie.py](default/pie.py) | [pie.py](quitemailingyourself/pie.py) |
-| Table | [table.py](default/table.py) | [table.py](care-indeed/table.py) | [table.py](default/table.py) | [table.py](quitemailingyourself/table.py) |
-| Map | [map.py](default/map.py) | [map.py](care-indeed/map.py) | [map.py](default/map.py) | [map.py](quitemailingyourself/map.py) |
-| Diverging Bar | [diverging_bar.py](default/diverging_bar.py) | [diverging_bar.py](care-indeed/diverging_bar.py) | [diverging_bar.py](default/diverging_bar.py) | [diverging_bar.py](quitemailingyourself/diverging_bar.py) |
-| Sparkline Line | [sparkline_line.py](default/sparkline_line.py) | [sparkline_line.py](care-indeed/sparkline_line.py) | [sparkline_line.py](default/sparkline_line.py) | [sparkline_line.py](quitemailingyourself/sparkline_line.py) |
-| Sparkline Area | [sparkline_area.py](default/sparkline_area.py) | [sparkline_area.py](care-indeed/sparkline_area.py) | [sparkline_area.py](default/sparkline_area.py) | [sparkline_area.py](quitemailingyourself/sparkline_area.py) |
-| Sparkline Bar | [sparkline_bar.py](default/sparkline_bar.py) | [sparkline_bar.py](care-indeed/sparkline_bar.py) | [sparkline_bar.py](default/sparkline_bar.py) | [sparkline_bar.py](quitemailingyourself/sparkline_bar.py) |
-| Stat Card | [stat_card.py](default/stat_card.py) | [stat_card.py](care-indeed/stat_card.py) | [stat_card.py](default/stat_card.py) | [stat_card.py](quitemailingyourself/stat_card.py) |
-| Big Number | [big_number.py](default/big_number.py) | [big_number.py](care-indeed/big_number.py) | [big_number.py](default/big_number.py) | [big_number.py](quitemailingyourself/big_number.py) |
-| Gauge | [gauge.py](default/gauge.py) | [gauge.py](care-indeed/gauge.py) | [gauge.py](default/gauge.py) | [gauge.py](quitemailingyourself/gauge.py) |
+| Bar (stacked) | [bar.py](default/bar.py) | [bar.py](care-indeed/bar.py) | [bar.py](plotly-default/bar.py) | [bar.py](quitemailingyourself/bar.py) |
+| Line | [line.py](default/line.py) | [line.py](care-indeed/line.py) | [line.py](plotly-default/line.py) | [line.py](quitemailingyourself/line.py) |
+| Area | [area.py](default/area.py) | [area.py](care-indeed/area.py) | [area.py](plotly-default/area.py) | [area.py](quitemailingyourself/area.py) |
+| Scatter | [scatter.py](default/scatter.py) | [scatter.py](care-indeed/scatter.py) | [scatter.py](plotly-default/scatter.py) | [scatter.py](quitemailingyourself/scatter.py) |
+| Pie | [pie.py](default/pie.py) | [pie.py](care-indeed/pie.py) | [pie.py](plotly-default/pie.py) | [pie.py](quitemailingyourself/pie.py) |
+| Table | [table.py](default/table.py) | [table.py](care-indeed/table.py) | [table.py](plotly-default/table.py) | [table.py](quitemailingyourself/table.py) |
+| Map | [map.py](default/map.py) | [map.py](care-indeed/map.py) | [map.py](plotly-default/map.py) | [map.py](quitemailingyourself/map.py) |
+| Diverging Bar | [diverging_bar.py](default/diverging_bar.py) | [diverging_bar.py](care-indeed/diverging_bar.py) | [diverging_bar.py](plotly-default/diverging_bar.py) | [diverging_bar.py](quitemailingyourself/diverging_bar.py) |
+| Sparkline Line | [sparkline_line.py](default/sparkline_line.py) | [sparkline_line.py](care-indeed/sparkline_line.py) | [sparkline_line.py](plotly-default/sparkline_line.py) | [sparkline_line.py](quitemailingyourself/sparkline_line.py) |
+| Sparkline Area | [sparkline_area.py](default/sparkline_area.py) | [sparkline_area.py](care-indeed/sparkline_area.py) | [sparkline_area.py](plotly-default/sparkline_area.py) | [sparkline_area.py](quitemailingyourself/sparkline_area.py) |
+| Sparkline Bar | [sparkline_bar.py](default/sparkline_bar.py) | [sparkline_bar.py](care-indeed/sparkline_bar.py) | [sparkline_bar.py](plotly-default/sparkline_bar.py) | [sparkline_bar.py](quitemailingyourself/sparkline_bar.py) |
+| Stat Card | [stat_card.py](default/stat_card.py) | [stat_card.py](care-indeed/stat_card.py) | [stat_card.py](plotly-default/stat_card.py) | [stat_card.py](quitemailingyourself/stat_card.py) |
+| Big Number | [big_number.py](default/big_number.py) | [big_number.py](care-indeed/big_number.py) | [big_number.py](plotly-default/big_number.py) | [big_number.py](quitemailingyourself/big_number.py) |
+| Gauge | [gauge.py](default/gauge.py) | [gauge.py](care-indeed/gauge.py) | [gauge.py](plotly-default/gauge.py) | [gauge.py](quitemailingyourself/gauge.py) |
 
 ---
 
