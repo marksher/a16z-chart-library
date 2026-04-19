@@ -1,0 +1,40 @@
+<h2>Pick a stack for the webapp</h2>
+<p class="subtitle">All three use Google OAuth + SQLite clickstream. Difference is how the UI is built.</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Flask + Jinja2 + vanilla JS</h3>
+      <p>Classic server-rendered HTML pages. Form submits → server generates PNG → browser downloads it. Minimal JavaScript — only for the data-entry grid and live preview.</p>
+      <div class="pros-cons">
+        <div class="pros"><h4>Pros</h4><ul><li>Simplest possible stack</li><li>Easy to deploy anywhere</li><li>Everyone knows Flask</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>Full page reload on submit</li><li>Less polished UX</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B ⭐ recommended</div>
+    <div class="content">
+      <h3>FastAPI + Jinja2 + HTMX</h3>
+      <p>Server-rendered with partial updates. Chart preview refreshes in-place without a full reload. FastAPI handles the PNG/SVG file responses cleanly and has built-in API docs.</p>
+      <div class="pros-cons">
+        <div class="pros"><h4>Pros</h4><ul><li>Live preview without JS framework</li><li>Clean binary file handling (PNG/SVG)</li><li>Type-safe, fast, modern</li><li>Built-in /docs endpoint</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>HTMX is a small new thing to learn</li><li>Slightly more setup than Flask</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>FastAPI + React SPA</h3>
+      <p>Full single-page app with a separate React frontend. API serves JSON + file downloads. Best UX ceiling, but requires a JS build step and two separate codebases to maintain.</p>
+      <div class="pros-cons">
+        <div class="pros"><h4>Pros</h4><ul><li>Best interactive UX possible</li><li>Easy to extend later</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>Overkill for a prototype</li><li>Node build step required</li><li>Two codebases to manage</li></ul></div>
+      </div>
+    </div>
+  </div>
+</div>

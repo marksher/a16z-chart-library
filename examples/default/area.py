@@ -1,15 +1,23 @@
-"""Area chart example — default theme (Plotly defaults)."""
+"""Area chart example — default theme."""
 
 import os
 import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../..", "scripts"))
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../a16z-news"))
 
 import json
-import area as _src
+import pandas as pd
 from chart_library import area, save_png, save_svg
 
 OUT = os.path.dirname(__file__)
+
+_df = pd.DataFrame({
+    "year": [2010, 2012, 2014, 2016, 2018, 2020, 2022, 2024],
+    "Permian Basin": [2,  4,  8,  14, 18, 16, 22, 28],
+    "Appalachia":    [5,  9,  14, 18, 21, 22, 24, 25],
+    "Haynesville":   [3,  6,  8,  7,  9,  11, 14, 16],
+    "Eagle Ford":    [1,  3,  7,  8,  7,  6,  7,  8],
+    "Other":         [14, 13, 12, 11, 11, 11, 11, 10],
+})
 
 
 _CFG = os.path.join(os.path.dirname(__file__), "area.json")
@@ -18,7 +26,7 @@ _CFG = os.path.join(os.path.dirname(__file__), "area.json")
 def make_fig(cfg_path=_CFG):
     with open(cfg_path) as f:
         cfg = json.load(f)
-    return area(_src._df, **cfg)
+    return area(_df, **cfg)
 
 
 if __name__ == "__main__":

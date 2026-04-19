@@ -7,7 +7,7 @@
   "orientation": "v",
   "stacked": true,
   "show_values": false,
-  "theme": null,
+  "theme": "a16z-news",
   "width": 900,
   "height": 560
 }

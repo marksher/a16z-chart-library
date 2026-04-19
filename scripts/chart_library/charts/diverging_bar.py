@@ -26,7 +26,7 @@ def diverging_bar(
     positive_label: Optional[str] = None,
     negative_label: Optional[str] = None,
     sorted: bool = True,
-    theme="a16z-news",
+    theme="default",
     width: int = 700,
     height: int = 800,
 ) -> go.Figure:
@@ -43,7 +43,7 @@ def diverging_bar(
     positive_label   : legend entry for positive bars (None = no legend)
     negative_label   : legend entry for negative bars (None = no legend)
     sorted           : sort categories by value (largest at top)
-    theme            : 'a16z-news' | path to YAML | Theme object | None
+    theme            : 'default' | path to YAML | Theme object | None
 
     Returns
     -------

@@ -1,13 +1,12 @@
-"""Sparkline area example — default theme (Plotly defaults)."""
+"""Sparkline area example — default theme."""
 
 import os
 import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../..", "scripts"))
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../a16z-news"))
 
 import json
-import sparkline_line as _src
 from chart_library import sparkline_area, save_png, save_svg
+from sparkline_line import _df
 
 OUT = os.path.dirname(__file__)
 
@@ -18,7 +17,7 @@ _CFG = os.path.join(os.path.dirname(__file__), "sparkline_area.json")
 def make_fig(cfg_path=_CFG):
     with open(cfg_path) as f:
         cfg = json.load(f)
-    return sparkline_area(_src._df, **cfg)
+    return sparkline_area(_df, **cfg)
 
 
 if __name__ == "__main__":

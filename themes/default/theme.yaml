@@ -1,0 +1,136 @@
+name: default
+version: "1.0"
+description: Default chart theme
+
+# ── Background ────────────────────────────────────────────────────────────────
+background: "#F0EBE3"
+plot_background: "#F0EBE3"
+
+# ── Text colors ───────────────────────────────────────────────────────────────
+text:
+  title: "#1C2B3A"
+  subtitle: "#5A6472"
+  axis: "#9AA3AC"
+  source: "#9AA3AC"
+  label: "#5A6472"
+
+# ── Data palette ────────────────────────
+palette:
+  - "#7B1A2A"   # maroon/burgundy  — primary
+  - "#2B6C8F"   # teal
+  - "#4A7C59"   # sage green
+  - "#C4A575"   # gold/tan
+  - "#1F3B54"   # navy
+  - "#A8D5E8"   # light blue
+  - "#D89B9E"   # salmon
+
+# ── Typography ────────────────────────────────────────────────────────────────
+fonts:
+  family: "Georgia, 'Times New Roman', serif"
+
+font_sizes:
+  title: 22
+  subtitle: 13
+  axis_tick: 10
+  axis_label: 11
+  source: 9
+  data_label: 9
+
+font_weights:
+  title: "bold"
+  subtitle: "normal"
+
+# ── Layout ────────────────────────────────────────────────────────────────────
+margins:
+  top: 90
+  bottom: 60
+  left: 60
+  right: 50
+
+# ── Grid ──────────────────────────────────────────────────────────────────────
+grid:
+  color: "#E0DAD0"
+  width: 1
+  horizontal: true
+  vertical: false
+
+# ── Spines ────────────────────────────────────────────────────────────────────
+spines:
+  top: false
+  right: false
+  color: "#C8C0B4"
+  width: 1
+
+# ── Legend ────────────────────────────────────────────────────────────────────
+legend:
+  position: "bottom"    # bottom | top | right | left
+  orientation: "h"
+  marker: "circle"      # circle | square
+  border: false
+
+# ── Branding ──────────────────────────────────────────────────────────────────
+branding:
+  show: true
+  text: "default"             # shown when no image is set
+  # image: "logo.svg"      # SVG, PNG, or JPG — local path or URL; takes priority over text
+  # image_width: 60        # pixels (default 60)
+  # image_height: 20       # pixels (default 20)
+  # opacity: 1.0
+  position: "bottom_right"
+  color: "#1C2B3A"
+  font_size: 10
+  font_weight: "bold"
+
+# ── Source attribution ────────────────────────────────────────────────────────
+source:
+  prefix: "Source: "
+  position: "bottom_left"
+  italic: true
+
+# ── Chart-type overrides ──────────────────────────────────────────────────────
+bar:
+  gap: 0.25
+  group_gap: 0.05
+
+line:
+  width: 2.5
+  end_labels: true      # inline labels at line ends instead of legend
+  markers: false
+  marker_size: 6
+
+area:
+  opacity: 0.75
+  line_width: 0
+
+scatter:
+  marker_size: 8
+  opacity: 0.8
+
+pie:
+  hole: 0.55            # donut style
+
+table:
+  header_background: "#1C2B3A"
+  header_text: "#FFFFFF"
+  highlight_color: "#C4A575"
+  border_color: "#E0DAD0"
+
+map:
+  land_color: "#E8E4DC"
+  ocean_color: "#D4D0CA"
+  border_color: "#C8C0B4"
+
+stat_card:
+  value_font_size: 48
+  label_font_size: 14
+  border_radius: 12
+
+big_number:
+  value_font_size: 56
+  label_font_size: 13
+
+gauge:
+  arc_bg_color: "#E0DAD0"
+  value_font_size: 32
+  label_font_size: 13
+  min_max_font_size: 11

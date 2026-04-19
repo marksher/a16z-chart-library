@@ -5,7 +5,7 @@ Usage
 -----
 from chart_library.themes import load_theme, Theme
 
-t = load_theme("a16z-news")          # built-in theme
+t = load_theme("default")          # built-in theme
 t = load_theme("path/to/theme.yaml") # custom theme
 t = load_theme(None)                 # Plotly defaults (returns None)
 """
@@ -64,7 +64,7 @@ def load_theme(theme) -> Optional[Theme]:
     ----------
     theme : None | str | dict | Theme
         - None           → returns None (caller uses Plotly defaults)
-        - "a16z-news"    → loads the bundled a16z-news.yaml
+        - "default"      → loads the bundled default.yaml
         - "/path/to.yaml"→ loads from an absolute or relative path
         - dict           → constructs a Theme from a plain dict
         - Theme          → returned as-is
@@ -81,7 +81,7 @@ def load_theme(theme) -> Optional[Theme]:
         filtered = {k: v for k, v in theme.items() if k in valid_fields}
         return Theme(**filtered)
 
-    # String: either a bare name ("a16z-news") or a file path
+    # String: either a bare name ("default") or a file path
     path = Path(str(theme))
 
     if not path.suffix:

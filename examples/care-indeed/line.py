@@ -3,7 +3,7 @@
 import os
 import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../..", "scripts"))
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../a16z-news"))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../default"))
 
 import json
 import line as _src

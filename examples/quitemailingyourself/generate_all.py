@@ -16,9 +16,9 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../..", "scripts"))
 
 EXAMPLES_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# Add a16z-news to sys.path so quitemailingyourself modules can resolve their data imports.
+# Add default to sys.path so quitemailingyourself modules can resolve their data imports.
 # Do NOT add quitemailingyourself itself — both dirs share the same filenames.
-sys.path.insert(0, os.path.join(EXAMPLES_DIR, "../a16z-news"))
+sys.path.insert(0, os.path.join(EXAMPLES_DIR, "../default"))
 
 from chart_library import load_theme
 

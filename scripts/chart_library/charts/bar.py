@@ -22,7 +22,7 @@ def bar(
     orientation: str = "v",
     stacked: bool = False,
     show_values: bool = True,
-    theme="a16z-news",
+    theme="default",
     width: int = 900,
     height: int = 560,
 ) -> go.Figure:
@@ -37,7 +37,7 @@ def bar(
     orientation : 'v' vertical columns | 'h' horizontal bars
     stacked     : True for stacked bars, False for grouped
     show_values : annotate each bar with its value
-    theme       : 'a16z-news' | path to YAML | Theme object | None (Plotly default)
+    theme       : 'default' | path to YAML | Theme object | None (Plotly default)
 
     Returns
     -------

@@ -58,7 +58,7 @@ DF_SPARK = pd.DataFrame({
 
 # ── Chart smoke tests ────────────────────────────────────────────────────────
 
-@pytest.mark.parametrize("theme", ["a16z-news", None])
+@pytest.mark.parametrize("theme", ["default", None])
 class TestChartTypes:
     def test_bar(self, theme):
         fig = bar(DF_XY, x="x", y="y", theme=theme)
@@ -133,9 +133,9 @@ class TestChartTypes:
 
 class TestTheme:
     def test_load_builtin(self):
-        t = load_theme("a16z-news")
+        t = load_theme("default")
         assert isinstance(t, Theme)
-        assert t.name == "a16z-news"
+        assert t.name == "default"
         assert len(t.palette) > 0
 
     def test_load_none(self):
@@ -146,15 +146,15 @@ class TestTheme:
             load_theme("nonexistent-theme")
 
     def test_passthrough(self):
-        t = load_theme("a16z-news")
+        t = load_theme("default")
         assert load_theme(t) is t
 
     def test_stat_card_overrides(self):
-        t = load_theme("a16z-news")
+        t = load_theme("default")
         assert isinstance(t.stat_card, dict)
 
     def test_big_number_overrides(self):
-        t = load_theme("a16z-news")
+        t = load_theme("default")
         assert isinstance(t.big_number, dict)
 
 
@@ -162,7 +162,7 @@ class TestTheme:
 
 class TestExport:
     def _simple_fig(self):
-        return bar(DF_XY, x="x", y="y", theme="a16z-news")
+        return bar(DF_XY, x="x", y="y", theme="default")
 
     def test_save_png(self):
         fig = self._simple_fig()
@@ -206,7 +206,7 @@ THEMED_CHARTS = [
 ]
 
 
-@pytest.mark.parametrize("theme", ["a16z-news", "care-indeed", None])
+@pytest.mark.parametrize("theme", ["default", "care-indeed", None])
 class TestVisualOutput:
     """Verify PNG exports are non-blank and SVG exports contain expected content."""
 
@@ -249,7 +249,7 @@ class TestTitleRendering:
     """Verify titles appear in output for both themed and unthemed charts."""
 
     def test_themed_title_in_svg(self):
-        fig = bar(DF_XY, x="x", y="y", title="MyTestTitle", theme="a16z-news")
+        fig = bar(DF_XY, x="x", y="y", title="MyTestTitle", theme="default")
         with tempfile.NamedTemporaryFile(suffix=".svg", delete=False, mode="w") as f:
             path = f.name
         try:
@@ -273,7 +273,7 @@ class TestTitleRendering:
             os.unlink(path)
 
     def test_themed_subtitle_in_svg(self):
-        fig = line(DF_MULTI, x="year", y=["Series A"], title="T", subtitle="MySub", theme="a16z-news")
+        fig = line(DF_MULTI, x="year", y=["Series A"], title="T", subtitle="MySub", theme="default")
         with tempfile.NamedTemporaryFile(suffix=".svg", delete=False, mode="w") as f:
             path = f.name
         try:

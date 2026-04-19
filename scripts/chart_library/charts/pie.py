@@ -24,7 +24,7 @@ def pie(
     subtitle: str = None,
     source: str = None,
     hole: Optional[float] = None,
-    theme="a16z-news",
+    theme="default",
     width: int = 700,
     height: int = 560,
 ) -> go.Figure:
@@ -37,7 +37,7 @@ def pie(
     labels : column name for slice labels
     values : column name for slice values
     hole   : donut hole size 0.0–0.9 (overrides theme default; 0 = full pie)
-    theme  : 'a16z-news' | path to YAML | Theme object | None
+    theme  : 'default' | path to YAML | Theme object | None
 
     Returns
     -------

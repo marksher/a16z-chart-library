@@ -2,7 +2,7 @@
 
 A themeable Plotly chart library. Every chart function returns a `plotly.graph_objects.Figure` — display it interactively in a notebook or browser, or export as a static PNG. The visual style is fully defined in a YAML theme file you can swap out or override at any level.
 
-Comes bundled with the `a16z-news` theme. Pass `theme=None` to skip all styling and use Plotly's defaults.
+Comes bundled with the `default` theme. Pass `theme=None` to skip all styling and use Plotly's defaults.
 
 ---
 
@@ -30,10 +30,10 @@ pip install -e .
 
 | Theme | Preview | Download |
 |-------|---------|----------|
-| a16z-news | [Open preview](examples/a16z-news/all.html) | [Download HTML](examples/a16z-news/all.html) |
+| default | [Open preview](examples/default/all.html) | [Download HTML](examples/default/all.html) |
 | care-indeed | [Open preview](examples/care-indeed/all.html) | [Download HTML](examples/care-indeed/all.html) |
 | quitemailingyourself | [Open preview](examples/quitemailingyourself/all.html) | [Download HTML](examples/quitemailingyourself/all.html) |
-| default | [Open preview](examples/default/all.html) | [Download HTML](examples/default/all.html) |
+| plotly-default | [Open preview](examples/plotly-default/all.html) | [Download HTML](examples/plotly-default/all.html) |
 
 Each gallery also has a **Download HTML** button in the top-right corner that saves the entire gallery as a standalone file.
 
@@ -48,7 +48,7 @@ Prompts for a URL, scrapes colors and fonts, and generates a complete theme with
 ### Regenerate examples
 
 ```bash
-for f in examples/a16z-news/*.py; do python "$f"; done
+for f in examples/default/*.py; do python "$f"; done
 python examples/generate_all.py
 ```
 
@@ -90,7 +90,7 @@ All chart functions share these common parameters:
 | `title` | `""` | Bold headline |
 | `subtitle` | `None` | Lighter supporting line |
 | `source` | `None` | Source attribution (bottom-left) |
-| `theme` | `"a16z-news"` | Theme name, file path, `Theme` object, or `None` for Plotly defaults |
+| `theme` | `"default"` | Theme name, file path, `Theme` object, or `None` for Plotly defaults |
 | `width` | `900` | Figure width in pixels |
 | `height` | `560` | Figure height in pixels |
 
@@ -122,7 +122,7 @@ fig = bar(
 )
 ```
 
-![Bar chart example](examples/a16z-news/bar_stacked.png)
+![Bar chart example](examples/default/bar_stacked.png)
 
 ---
 
@@ -143,7 +143,7 @@ fig = line(
 )
 ```
 
-![Line chart example](examples/a16z-news/line.png)
+![Line chart example](examples/default/line.png)
 
 ---
 
@@ -163,7 +163,7 @@ fig = area(
 )
 ```
 
-![Area chart example](examples/a16z-news/area.png)
+![Area chart example](examples/default/area.png)
 
 ---
 
@@ -193,7 +193,7 @@ fig = scatter(
 )
 ```
 
-![Scatter chart example](examples/a16z-news/scatter.png)
+![Scatter chart example](examples/default/scatter.png)
 
 ---
 
@@ -213,7 +213,7 @@ fig = pie(
 )
 ```
 
-![Pie chart example](examples/a16z-news/pie.png)
+![Pie chart example](examples/default/pie.png)
 
 ---
 
@@ -231,7 +231,7 @@ fig = table(
 )
 ```
 
-![Table chart example](examples/a16z-news/table.png)
+![Table chart example](examples/default/table.png)
 
 ---
 
@@ -266,7 +266,7 @@ fig = map_chart(
 )
 ```
 
-![Map chart example](examples/a16z-news/map.png)
+![Map chart example](examples/default/map.png)
 
 ---
 
@@ -285,7 +285,7 @@ fig = diverging_bar(
 )
 ```
 
-![Diverging bar chart example](examples/a16z-news/diverging_bar.png)
+![Diverging bar chart example](examples/default/diverging_bar.png)
 
 ---
 
@@ -323,7 +323,7 @@ fig = stat_card(
 )
 ```
 
-![Stat card example](examples/a16z-news/stat_card.png)
+![Stat card example](examples/default/stat_card.png)
 
 ---
 
@@ -342,7 +342,7 @@ fig = big_number(
 )
 ```
 
-![Big number example](examples/a16z-news/big_number.png)
+![Big number example](examples/default/big_number.png)
 
 ---
 
@@ -363,7 +363,7 @@ fig = gauge(
 )
 ```
 
-![Gauge example](examples/a16z-news/gauge.png)
+![Gauge example](examples/default/gauge.png)
 
 ---
 
@@ -373,7 +373,7 @@ The visual style — fonts, colors, grid, margins, branding, legend — is fully
 
 ```python
 # 1. Built-in theme by name (default)
-fig = bar(df, x="x", y="y", theme="a16z-news")
+fig = bar(df, x="x", y="y", theme="default")
 
 # 2. Path to a custom YAML file
 fig = bar(df, x="x", y="y", theme="path/to/my-theme.yaml")
@@ -389,7 +389,7 @@ fig = bar(df, x="x", y="y", theme=None)
 
 ### Building a custom theme
 
-Copy `themes/a16z-news/theme.yaml` as a starting point. All keys are optional — omitted keys fall back to Plotly defaults.
+Copy `themes/default/theme.yaml` as a starting point. All keys are optional — omitted keys fall back to Plotly defaults.
 
 ```yaml
 name: my-brand
@@ -498,7 +498,7 @@ map:
 ```python
 from chart_library import load_theme
 
-t = load_theme("a16z-news")
+t = load_theme("default")
 print(t.palette)             # ['#7B1A2A', '#2B6C8F', ...]
 print(t.fonts["family"])     # "Georgia, 'Times New Roman', serif"
 ```
@@ -545,12 +545,12 @@ PDF export is not currently supported — use SVG for vector output or HTML for 
 
 ```
 examples/
-  a16z-news/         ← Example scripts + output PNGs + all.html gallery
+  default/           ← Example scripts + output PNGs + all.html gallery
   care-indeed/       ← Care Indeed brand theme examples
   quitemailingyourself/ ← Auto-generated theme from quitemailingyourself.com
-  default/           ← Same examples rendered with theme=None (plain Plotly)
+  plotly-default/    ← Same examples rendered with theme=None (plain Plotly)
   index.html         ← Links to all theme galleries
-  generate_all.py    ← Rebuilds examples/a16z-news/all.html
+  generate_all.py    ← Rebuilds examples/default/all.html
 
 graphs/              ← Scraped chart images organized by type (bar/, line/, area/, etc.)
                        Open graphs/browse.html to browse visually
@@ -567,13 +567,13 @@ scripts/
 source/              ← Raw HTML cache of scraped articles (YYYY-MM/slug/)
 
 themes/
-  a16z-news/
+  default/
     theme.yaml       ← Editable copy of the bundled theme — start here to make your own
 ```
 
 ---
 
-## Design system — a16z-news theme
+## Design system — default theme
 
 | Element | Value |
 |---------|-------|

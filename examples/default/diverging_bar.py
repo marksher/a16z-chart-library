@@ -1,15 +1,32 @@
-"""Diverging bar chart example — default theme (Plotly defaults)."""
+"""Diverging bar chart example — default theme."""
 
 import os
 import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../..", "scripts"))
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../a16z-news"))
 
 import json
-import diverging_bar as _src
+import pandas as pd
 from chart_library import diverging_bar, save_png, save_svg
 
 OUT = os.path.dirname(__file__)
+
+_df = pd.DataFrame({
+    "city": [
+        "Denver, CO", "Washington, DC", "Omaha, NE", "Los Angeles, CA",
+        "Buffalo, NY", "Albuquerque, NM", "Long Beach, CA", "Atlanta, GA",
+        "Baltimore, MD", "Chicago, IL", "Norfolk, VA", "Salt Lake City, UT",
+        "Dallas, TX", "Austin, TX", "Memphis, TN", "Louisville, KY",
+        "Nashville-Davidson, TN", "San Francisco, CA", "Minneapolis, MN",
+        "Detroit, MI", "San Antonio, TX", "Philadelphia, PA", "Lincoln, NE",
+        "Chattanooga, TN", "St. Louis, MO", "Arlington, VA", "Richmond, VA",
+        "El Paso, TX", "Milwaukee, WI", "Fort Worth, TX", "Little Rock, AR",
+    ],
+    "pct_change": [
+        -42, -31, 11, -44, -48, -20, -21, -25, -60, -18, -27, -47,
+        -32, 36, -12, 25, -14, -27, 30, -31, -1, -37, 15, -48,
+        -40, -7, -15, -50, -1, 42, 13,
+    ],
+})
 
 
 _CFG = os.path.join(os.path.dirname(__file__), "diverging_bar.json")
@@ -18,7 +35,7 @@ _CFG = os.path.join(os.path.dirname(__file__), "diverging_bar.json")
 def make_fig(cfg_path=_CFG):
     with open(cfg_path) as f:
         cfg = json.load(f)
-    return diverging_bar(_src._df, **cfg)
+    return diverging_bar(_df, **cfg)
 
 
 if __name__ == "__main__":

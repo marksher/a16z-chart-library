@@ -159,7 +159,7 @@ def build_palette(colors: list[str]) -> dict:
     table_header_bg, map_land, map_ocean.
     """
     if not colors:
-        # Fallback to a16z-news-like defaults
+        # Fallback to default-like defaults
         return _default_palette()
 
     # Separate colors by luminance
@@ -415,7 +415,7 @@ gauge:
 
 # Chart types and their function names / import patterns
 CHART_TYPES = [
-    # (filename_stem, function_name, has_data_from_a16z, special_scatter)
+    # (filename_stem, function_name, has_data_from_default, special_scatter)
     ("bar",            "bar",            True,  False),
     ("line",           "line",           True,  False),
     ("area",           "area",           True,  False),
@@ -446,7 +446,7 @@ def _example_py(stem: str, func_name: str, has_data: bool, is_scatter: bool, the
     lines += ['sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../..", "scripts"))']
 
     if has_data:
-        lines += ['sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../a16z-news"))']
+        lines += ['sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../default"))']
 
     lines += ["", "import json"]
 
@@ -484,7 +484,7 @@ def _example_py(stem: str, func_name: str, has_data: bool, is_scatter: bool, the
 
 
 def create_json_configs(theme_name: str, src_dir: str, dest_dir: str):
-    """Copy JSON configs from a16z-news, setting the theme name on all."""
+    """Copy JSON configs from default, setting the theme name on all."""
     for fname in os.listdir(src_dir):
         if not fname.endswith(".json"):
             continue
@@ -665,8 +665,8 @@ def main():
     examples_dir = os.path.join(REPO_ROOT, "examples", theme_name)
     os.makedirs(examples_dir, exist_ok=True)
 
-    # Copy JSON configs from a16z-news, swapping theme name
-    a16z_dir = os.path.join(REPO_ROOT, "examples", "a16z-news")
+    # Copy JSON configs from default, swapping theme name
+    a16z_dir = os.path.join(REPO_ROOT, "examples", "default")
     create_json_configs(theme_name, a16z_dir, examples_dir)
     print(f"  Created JSON configs in {examples_dir}/")
 

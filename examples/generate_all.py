@@ -1,5 +1,5 @@
 """
-Generate all.html — gallery of all chart types using the a16z-news theme.
+Generate all.html — gallery of all chart types using the default theme.
 Each section shows: chart type / interactive / PNG / SVG at matching sizes,
 plus a collapsible Python code snippet.
 Run from the repo root: python examples/generate_all.py
@@ -13,7 +13,7 @@ import html as _html
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "scripts"))
 
-EXAMPLES_DIR = os.path.join(os.path.dirname(__file__), "a16z-news")
+EXAMPLES_DIR = os.path.join(os.path.dirname(__file__), "default")
 sys.path.insert(0, EXAMPLES_DIR)
 
 from chart_library import load_theme
@@ -95,7 +95,7 @@ def _extract_snippet(py_path: str) -> str:
 
 
 # ── Theme swatch ──────────────────────────────────────────────────────────────
-t = load_theme("a16z-news")
+t = load_theme("default")
 
 
 def _swatch_item(color: str, name: str = "") -> str:
@@ -346,9 +346,9 @@ html = """<!DOCTYPE html>
     <div class="header-row">
       <div>
         <h1>Chart Library</h1>
-        <p>All chart types — interactive Plotly / PNG export / SVG export. Theme: a16z-news.</p>
+        <p>All chart types — interactive Plotly / PNG export / SVG export. Theme: default.</p>
       </div>
-      <button class="dl-btn" onclick="dlPage('chart-library-a16z-news.html')">&#8595; Download HTML</button>
+      <button class="dl-btn" onclick="dlPage('chart-library-default.html')">&#8595; Download HTML</button>
     </div>
   </header>
 """ + swatch_section + "\n".join(sections) + """

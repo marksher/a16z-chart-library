@@ -1,15 +1,41 @@
-"""Scatter chart example — default theme (Plotly defaults)."""
+"""Scatter chart example — default theme."""
 
 import os
 import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../..", "scripts"))
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../a16z-news"))
 
 import json
-import scatter as _src
+import pandas as pd
+import numpy as np
 from chart_library import scatter, save_png, save_svg
 
 OUT = os.path.dirname(__file__)
+
+rng = np.random.default_rng(42)
+
+_open_models = [
+    "Llama 3.1 70B", "Mistral 7B", "Gemma 2 9B", "Phi-3 Mini",
+    "Qwen 2.5 72B", "DeepSeek V2", "Falcon 180B", "Yi 34B",
+]
+_closed_models = [
+    "GPT-4o", "Claude Sonnet 4", "Gemini 1.5 Pro", "GPT-4 Turbo",
+    "Claude Opus 4", "Gemini Ultra", "GPT-4o Mini",
+]
+
+_df = pd.concat([
+    pd.DataFrame({
+        "model": _open_models,
+        "cost": rng.uniform(0.0001, 0.5, len(_open_models)),
+        "usage": rng.uniform(1, 6, len(_open_models)),
+        "type": "Open Source",
+    }),
+    pd.DataFrame({
+        "model": _closed_models,
+        "cost": rng.uniform(1, 30, len(_closed_models)),
+        "usage": rng.uniform(2, 7, len(_closed_models)),
+        "type": "Closed Source",
+    }),
+], ignore_index=True)
 
 
 _CFG = os.path.join(os.path.dirname(__file__), "scatter.json")
@@ -18,7 +44,7 @@ _CFG = os.path.join(os.path.dirname(__file__), "scatter.json")
 def make_fig(cfg_path=_CFG):
     with open(cfg_path) as f:
         cfg = json.load(f)
-    fig = scatter(_src._df, **cfg)
+    fig = scatter(_df, **cfg)
     fig.update_xaxes(type="log", title_text="Cost per 1M Tokens ($)")
     fig.update_yaxes(type="log", title_text="Total Usage in Millions of Tokens")
     return fig

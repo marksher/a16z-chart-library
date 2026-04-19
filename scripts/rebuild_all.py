@@ -89,8 +89,8 @@ def rebuild_galleries(themes: list[str]) -> list[str]:
     print(f"{'='*60}")
 
     for theme in themes:
-        # a16z-news uses the top-level generate_all.py
-        if theme == "a16z-news":
+        # default uses the top-level generate_all.py
+        if theme == "default":
             gen_path = EXAMPLES_DIR / "generate_all.py"
         else:
             gen_path = EXAMPLES_DIR / theme / "generate_all.py"
@@ -218,7 +218,7 @@ def update_readme(themes: list[str]) -> list[str]:
     # ── Update regenerating section ──────────────────────────────────────
     regen_lines = []
     for t in themes:
-        if t == "a16z-news":
+        if t == "default":
             regen_lines.append(f"python examples/generate_all.py{' ' * max(1, 40 - len('python examples/generate_all.py'))}# {t}")
         else:
             cmd = f"python examples/{t}/generate_all.py"

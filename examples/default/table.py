@@ -1,15 +1,33 @@
-"""Table chart example — default theme (Plotly defaults)."""
+"""Table chart example — default theme."""
 
 import os
 import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../..", "scripts"))
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../a16z-news"))
 
 import json
-import table as _src
+import pandas as pd
 from chart_library import table, save_png, save_svg
 
 OUT = os.path.dirname(__file__)
+
+_df = pd.DataFrame({
+    "Company": [
+        "Salesforce", "HubSpot", "Zendesk", "Intercom",
+        "Notion", "GitHub", "Slack", "Zoom",
+    ],
+    "AI Packaging": [
+        "Add-on > core", "Core", "Add-on", "Core",
+        "Add-on > core", "Core", "Core", "Add-on",
+    ],
+    "Billing Model": [
+        "Subscription > hybrid", "Hybrid", "Usage", "Hybrid",
+        "Subscription", "Subscription", "Subscription", "Subscription",
+    ],
+    "Status": [
+        "Updated", "Stable", "Updated", "Stable",
+        "Updated", "Stable", "Stable", "Stable",
+    ],
+})
 
 
 _CFG = os.path.join(os.path.dirname(__file__), "table.json")
@@ -18,7 +36,7 @@ _CFG = os.path.join(os.path.dirname(__file__), "table.json")
 def make_fig(cfg_path=_CFG):
     with open(cfg_path) as f:
         cfg = json.load(f)
-    return table(_src._df, **cfg)
+    return table(_df, **cfg)
 
 
 if __name__ == "__main__":

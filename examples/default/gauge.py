@@ -1,4 +1,4 @@
-"""Gauge example — default theme (Plotly defaults)."""
+"""Gauge example — default theme."""
 
 import os
 import sys

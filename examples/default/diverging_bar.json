@@ -7,7 +7,7 @@
   "positive_label": "Increase",
   "negative_label": "Decrease",
   "sorted": true,
-  "theme": null,
+  "theme": "a16z-news",
   "width": 700,
   "height": 820
 }

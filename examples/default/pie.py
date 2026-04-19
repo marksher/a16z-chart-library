@@ -1,15 +1,26 @@
-"""Pie / donut chart example — default theme (Plotly defaults)."""
+"""Pie / donut chart example — default theme."""
 
 import os
 import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../..", "scripts"))
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../a16z-news"))
 
 import json
-import pie as _src
+import pandas as pd
 from chart_library import pie, save_png, save_svg
 
 OUT = os.path.dirname(__file__)
+
+_df = pd.DataFrame({
+    "category": [
+        "Foundation Models",
+        "Developer Tooling",
+        "Enterprise AI",
+        "Consumer AI",
+        "AI Infrastructure",
+        "Other",
+    ],
+    "share": [38, 22, 18, 12, 7, 3],
+})
 
 
 _CFG = os.path.join(os.path.dirname(__file__), "pie.json")
@@ -18,7 +29,7 @@ _CFG = os.path.join(os.path.dirname(__file__), "pie.json")
 def make_fig(cfg_path=_CFG):
     with open(cfg_path) as f:
         cfg = json.load(f)
-    return pie(_src._df, **cfg)
+    return pie(_df, **cfg)
 
 
 if __name__ == "__main__":
