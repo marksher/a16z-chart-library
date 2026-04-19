@@ -21,7 +21,7 @@ def line(
     source: str = None,
     dashed: list = None,
     end_labels: bool = None,
-    theme="default",
+    theme="news",
     width: int = 900,
     height: int = 560,
 ) -> go.Figure:
@@ -36,7 +36,7 @@ def line(
     dashed      : list of series names to render as dashed lines
     end_labels  : True = inline label at each line's last point (overrides theme)
                   False = use legend instead
-    theme       : 'default' | path to YAML | Theme object | None
+    theme       : 'news' | path to YAML | Theme object | None
 
     Returns
     -------

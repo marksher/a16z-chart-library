@@ -5,7 +5,7 @@
   "subtitle": "Bcf/d",
   "source": "EIA; Natural Gas Intelligence; Wood Mackenzie",
   "stacked": true,
-  "theme": "a16z-news",
+  "theme": null,
   "width": 900,
   "height": 560
 }

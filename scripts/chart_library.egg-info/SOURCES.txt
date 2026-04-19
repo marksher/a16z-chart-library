@@ -15,7 +15,7 @@ scripts/chart_library/charts/pie.py
 scripts/chart_library/charts/scatter.py
 scripts/chart_library/charts/table.py
 scripts/chart_library/themes/__init__.py
-scripts/chart_library/themes/a16z-news.yaml
+scripts/chart_library/themes/news.yaml
 scripts/chart_library/themes/base.py
 scripts/chart_library/utils/__init__.py
 scripts/chart_library/utils/layout.py

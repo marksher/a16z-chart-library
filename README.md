@@ -2,7 +2,7 @@
 
 A themeable Plotly chart library. Every chart function returns a `plotly.graph_objects.Figure` — display it interactively in a notebook or browser, or export as a static PNG. The visual style is fully defined in a YAML theme file you can swap out or override at any level.
 
-Comes bundled with the `default` theme. Pass `theme=None` to skip all styling and use Plotly's defaults.
+Comes bundled with the `news` theme. Pass `theme=None` to skip all styling and use Plotly's defaults.
 
 ---
 
@@ -31,9 +31,9 @@ pip install -e .
 | Theme | Preview | Download |
 |-------|---------|----------|
 | default | [Open preview](examples/default/all.html) | [Download HTML](examples/default/all.html) |
+| news | [Open preview](examples/news/all.html) | [Download HTML](examples/news/all.html) |
 | care-indeed | [Open preview](examples/care-indeed/all.html) | [Download HTML](examples/care-indeed/all.html) |
 | quitemailingyourself | [Open preview](examples/quitemailingyourself/all.html) | [Download HTML](examples/quitemailingyourself/all.html) |
-| plotly-default | [Open preview](examples/plotly-default/all.html) | [Download HTML](examples/plotly-default/all.html) |
 
 Each gallery also has a **Download HTML** button in the top-right corner that saves the entire gallery as a standalone file.
 
@@ -48,7 +48,8 @@ Prompts for a URL, scrapes colors and fonts, and generates a complete theme with
 ### Regenerate examples
 
 ```bash
-for f in examples/default/*.py; do python "$f"; done
+for f in examples/news/*.py; do python "$f"; done   # news theme
+for f in examples/default/*.py; do python "$f"; done # default (Plotly defaults)
 python examples/generate_all.py
 ```
 
@@ -90,7 +91,7 @@ All chart functions share these common parameters:
 | `title` | `""` | Bold headline |
 | `subtitle` | `None` | Lighter supporting line |
 | `source` | `None` | Source attribution (bottom-left) |
-| `theme` | `"default"` | Theme name, file path, `Theme` object, or `None` for Plotly defaults |
+| `theme` | `"news"` | Theme name, file path, `Theme` object, or `None` for Plotly defaults |
 | `width` | `900` | Figure width in pixels |
 | `height` | `560` | Figure height in pixels |
 
@@ -122,7 +123,7 @@ fig = bar(
 )
 ```
 
-![Bar chart example](examples/default/bar_stacked.png)
+![Bar chart example](examples/news/bar_stacked.png)
 
 ---
 
@@ -143,7 +144,7 @@ fig = line(
 )
 ```
 
-![Line chart example](examples/default/line.png)
+![Line chart example](examples/news/line.png)
 
 ---
 
@@ -163,7 +164,7 @@ fig = area(
 )
 ```
 
-![Area chart example](examples/default/area.png)
+![Area chart example](examples/news/area.png)
 
 ---
 
@@ -193,7 +194,7 @@ fig = scatter(
 )
 ```
 
-![Scatter chart example](examples/default/scatter.png)
+![Scatter chart example](examples/news/scatter.png)
 
 ---
 
@@ -213,7 +214,7 @@ fig = pie(
 )
 ```
 
-![Pie chart example](examples/default/pie.png)
+![Pie chart example](examples/news/pie.png)
 
 ---
 
@@ -231,7 +232,7 @@ fig = table(
 )
 ```
 
-![Table chart example](examples/default/table.png)
+![Table chart example](examples/news/table.png)
 
 ---
 
@@ -266,7 +267,7 @@ fig = map_chart(
 )
 ```
 
-![Map chart example](examples/default/map.png)
+![Map chart example](examples/news/map.png)
 
 ---
 
@@ -285,7 +286,7 @@ fig = diverging_bar(
 )
 ```
 
-![Diverging bar chart example](examples/default/diverging_bar.png)
+![Diverging bar chart example](examples/news/diverging_bar.png)
 
 ---
 
@@ -323,7 +324,7 @@ fig = stat_card(
 )
 ```
 
-![Stat card example](examples/default/stat_card.png)
+![Stat card example](examples/news/stat_card.png)
 
 ---
 
@@ -342,7 +343,7 @@ fig = big_number(
 )
 ```
 
-![Big number example](examples/default/big_number.png)
+![Big number example](examples/news/big_number.png)
 
 ---
 
@@ -363,7 +364,7 @@ fig = gauge(
 )
 ```
 
-![Gauge example](examples/default/gauge.png)
+![Gauge example](examples/news/gauge.png)
 
 ---
 
@@ -372,8 +373,8 @@ fig = gauge(
 The visual style — fonts, colors, grid, margins, branding, legend — is fully defined in a YAML file. Swap it out entirely, point to a custom file, or pass `None` to use plain Plotly defaults (no custom fonts, colors, or branding).
 
 ```python
-# 1. Built-in theme by name (default)
-fig = bar(df, x="x", y="y", theme="default")
+# 1. Built-in theme by name
+fig = bar(df, x="x", y="y", theme="news")
 
 # 2. Path to a custom YAML file
 fig = bar(df, x="x", y="y", theme="path/to/my-theme.yaml")
@@ -389,7 +390,7 @@ fig = bar(df, x="x", y="y", theme=None)
 
 ### Building a custom theme
 
-Copy `themes/default/theme.yaml` as a starting point. All keys are optional — omitted keys fall back to Plotly defaults.
+Copy `themes/news/theme.yaml` as a starting point. All keys are optional — omitted keys fall back to Plotly defaults.
 
 ```yaml
 name: my-brand
@@ -498,7 +499,7 @@ map:
 ```python
 from chart_library import load_theme
 
-t = load_theme("default")
+t = load_theme("news")
 print(t.palette)             # ['#7B1A2A', '#2B6C8F', ...]
 print(t.fonts["family"])     # "Georgia, 'Times New Roman', serif"
 ```
@@ -545,35 +546,31 @@ PDF export is not currently supported — use SVG for vector output or HTML for 
 
 ```
 examples/
-  default/           ← Example scripts + output PNGs + all.html gallery
-  care-indeed/       ← Care Indeed brand theme examples
+  default/              ← Plotly defaults (theme=None) — the base all themes derive from
+  news/                 ← News theme examples + all.html gallery
+  care-indeed/          ← Care Indeed brand theme examples
   quitemailingyourself/ ← Auto-generated theme from quitemailingyourself.com
-  plotly-default/    ← Same examples rendered with theme=None (plain Plotly)
-  index.html         ← Links to all theme galleries
-  generate_all.py    ← Rebuilds examples/default/all.html
+  index.html            ← Links to all theme galleries
+  generate_all.py       ← Rebuilds examples/news/all.html
 
-graphs/              ← Scraped chart images organized by type (bar/, line/, area/, etc.)
-                       Open graphs/browse.html to browse visually
-
-progress/            ← Scraper state: completed_articles.txt + in_progress/ markers
+graphs/                 ← Scraped chart images organized by type (bar/, line/, area/, etc.)
+                          Open graphs/browse.html to browse visually
 
 scripts/
-  chart_library/     ← The pip-installable Python package (charts/, themes/, utils/)
-  create_theme.py    ← Generate a new theme from any website URL
-  scrape.py          ← Web scraper that populates source/ and graphs/
-  build_browse_html.py ← Regenerates graphs/browse.html
-  reclassify.py      ← Reclassifies images in graphs/other/
-
-source/              ← Raw HTML cache of scraped articles (YYYY-MM/slug/)
+  chart_library/        ← The pip-installable Python package (charts/, themes/, utils/)
+  create_theme.py       ← Generate a new theme from any website URL
+  scrape.py             ← Web scraper that populates graphs/
+  build_browse_html.py  ← Regenerates graphs/browse.html
+  reclassify.py         ← Reclassifies images in graphs/other/
 
 themes/
-  default/
-    theme.yaml       ← Editable copy of the bundled theme — start here to make your own
+  news/
+    theme.yaml          ← Editable copy of the news theme — start here to make your own
 ```
 
 ---
 
-## Design system — default theme
+## Design system — news theme
 
 | Element | Value |
 |---------|-------|

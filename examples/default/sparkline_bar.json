@@ -1,7 +1,7 @@
 {
   "x": "month",
   "y": ["GPT-4o", "Claude", "Gemini"],
-  "theme": "a16z-news",
+  "theme": null,
   "width": 300,
   "height": 80
 }

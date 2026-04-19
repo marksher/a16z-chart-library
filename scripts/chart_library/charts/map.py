@@ -24,7 +24,7 @@ def map_chart(
     title: str = "",
     subtitle: str = None,
     source: str = None,
-    theme="default",
+    theme="news",
     width: int = 900,
     height: int = 500,
 ) -> go.Figure:
@@ -37,7 +37,7 @@ def map_chart(
     locations     : column with ISO-3 country codes or US state abbreviations
     values        : column with numeric values to color-encode
     location_mode : 'ISO-3' (world countries) | 'USA-states'
-    theme         : 'default' | path to YAML | Theme object | None
+    theme         : 'news' | path to YAML | Theme object | None
 
     Returns
     -------

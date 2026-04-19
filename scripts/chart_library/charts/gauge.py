@@ -21,7 +21,7 @@ def gauge(
     min_val: float = 0,
     max_val: float = 100,
     value_format: Optional[str] = None,
-    theme="default",
+    theme="news",
     width: int = 300,
     height: int = 280,
 ) -> go.Figure:
@@ -36,7 +36,7 @@ def gauge(
     max_val      : maximum scale value (right end of arc)
     value_format : format string for displayed value, e.g. "{:.0f}%".
                    Defaults to auto: appends "%" if max_val == 100.
-    theme        : 'default' | path to YAML | Theme object | None
+    theme        : 'news' | path to YAML | Theme object | None
     width        : figure width in pixels
     height       : figure height in pixels
 

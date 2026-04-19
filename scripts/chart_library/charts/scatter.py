@@ -22,7 +22,7 @@ def scatter(
     size_col: Optional[str] = None,
     color_col: Optional[str] = None,
     label_col: Optional[str] = None,
-    theme="default",
+    theme="news",
     width: int = 900,
     height: int = 560,
 ) -> go.Figure:
@@ -37,7 +37,7 @@ def scatter(
     size_col  : column name whose values scale marker size (bubble chart)
     color_col : column name for categorical coloring (one color per category)
     label_col : column name for point labels (annotated next to markers)
-    theme     : 'default' | path to YAML | Theme object | None
+    theme     : 'news' | path to YAML | Theme object | None
 
     Returns
     -------

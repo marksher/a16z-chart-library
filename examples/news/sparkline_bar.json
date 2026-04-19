@@ -1,0 +1,7 @@
+{
+  "x": "month",
+  "y": ["GPT-4o", "Claude", "Gemini"],
+  "theme": "news",
+  "width": 300,
+  "height": 80
+}

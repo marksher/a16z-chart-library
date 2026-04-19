@@ -1,4 +1,4 @@
-"""Big number example — default theme."""
+"""Big number example — default theme (Plotly defaults)."""
 
 import os
 import sys

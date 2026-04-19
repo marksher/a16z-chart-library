@@ -67,7 +67,7 @@ All functions share the same common parameters:
 | `title` | `""` | Bold serif headline |
 | `subtitle` | `None` | Lighter supporting line |
 | `source` | `None` | Source attribution (bottom-left) |
-| `theme` | `"a16z-news"` | Theme name, file path, or `None` for Plotly defaults |
+| `theme` | `"news"` | Theme name, file path, or `None` for Plotly defaults |
 | `width` | `900` | Figure width in pixels |
 | `height` | `560` | Figure height in pixels |
 
@@ -99,7 +99,7 @@ fig = bar(
 )
 ```
 
-![Bar chart example](examples/a16z-news/bar_stacked.png)
+![Bar chart example](examples/news/bar_stacked.png)
 
 ---
 
@@ -120,7 +120,7 @@ fig = line(
 )
 ```
 
-![Line chart example](examples/a16z-news/line.png)
+![Line chart example](examples/news/line.png)
 
 ---
 
@@ -140,7 +140,7 @@ fig = area(
 )
 ```
 
-![Area chart example](examples/a16z-news/area.png)
+![Area chart example](examples/news/area.png)
 
 ---
 
@@ -170,7 +170,7 @@ fig = scatter(
 )
 ```
 
-![Scatter chart example](examples/a16z-news/scatter.png)
+![Scatter chart example](examples/news/scatter.png)
 
 ---
 
@@ -190,7 +190,7 @@ fig = pie(
 )
 ```
 
-![Pie chart example](examples/a16z-news/pie.png)
+![Pie chart example](examples/news/pie.png)
 
 ---
 
@@ -208,7 +208,7 @@ fig = table(
 )
 ```
 
-![Table chart example](examples/a16z-news/table.png)
+![Table chart example](examples/news/table.png)
 
 ---
 
@@ -242,7 +242,7 @@ fig = map_chart(
 )
 ```
 
-![Map chart example](examples/a16z-news/map.png)
+![Map chart example](examples/news/map.png)
 
 ---
 
@@ -252,7 +252,7 @@ The visual style is fully defined in a YAML file. Three ways to specify a theme:
 
 ```python
 # 1. Built-in theme by name (default)
-fig = bar(df, x="x", y="y", theme="a16z-news")
+fig = bar(df, x="x", y="y", theme="news")
 
 # 2. Path to a custom YAML file
 fig = bar(df, x="x", y="y", theme="path/to/my-theme.yaml")
@@ -263,7 +263,7 @@ fig = bar(df, x="x", y="y", theme=None)
 
 ### Theme file structure
 
-Copy `themes/a16z-news/theme.yaml` as a starting point. Every key is optional — missing keys fall back to Plotly defaults for that attribute.
+Copy `themes/news/theme.yaml` as a starting point. Every key is optional — missing keys fall back to Plotly defaults for that attribute.
 
 ```yaml
 name: my-brand
@@ -372,7 +372,7 @@ map:
 ```python
 from chart_library import load_theme
 
-t = load_theme("a16z-news")
+t = load_theme("news")
 print(t.palette)        # ['#7B1A2A', '#2B6C8F', ...]
 print(t.fonts["family"])  # "Georgia, 'Times New Roman', serif"
 
@@ -413,18 +413,18 @@ scripts/
     __init__.py         ← public API
     themes/
       base.py           ← Theme dataclass + load_theme()
-      a16z-news.yaml    ← bundled theme (package data)
+      news.yaml    ← bundled theme (package data)
     charts/
       bar.py  line.py  area.py  scatter.py  pie.py  table.py  map.py
     utils/
       layout.py         ← _apply_theme(), save_png()
 
 themes/
-  a16z-news/
-    theme.yaml          ← editable copy of the a16z-news theme
+  news/
+    theme.yaml          ← editable copy of the news theme
 
 examples/
-  a16z-news/            ← all chart types with a16z-news theme
+  news/            ← all chart types with news theme
   default/              ← all chart types with Plotly default styling
 
 graphs/                 ← scraped chart images
@@ -439,7 +439,7 @@ pyproject.toml
 
 ## Design system
 
-The a16z-news theme visual tokens, extracted from chart analysis:
+The news theme visual tokens, extracted from chart analysis:
 
 | Element | Value |
 |---------|-------|

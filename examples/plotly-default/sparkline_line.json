@@ -1,8 +1,0 @@
-{
-  "x": "month",
-  "y": ["GPT-4o", "Claude", "Gemini"],
-  "end_dot": true,
-  "theme": null,
-  "width": 300,
-  "height": 80
-}

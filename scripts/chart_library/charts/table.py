@@ -22,7 +22,7 @@ def table(
     source: str = None,
     highlight_rows: List[int] = None,
     header_cols: List[str] = None,
-    theme="default",
+    theme="news",
     width: int = 900,
     height: Optional[int] = None,
 ) -> go.Figure:
@@ -34,7 +34,7 @@ def table(
     data          : pd.DataFrame or list-of-dicts
     highlight_rows: list of row indices (0-based) to highlight in gold
     header_cols   : column names to display; defaults to all columns
-    theme         : 'default' | path to YAML | Theme object | None
+    theme         : 'news' | path to YAML | Theme object | None
 
     Returns
     -------

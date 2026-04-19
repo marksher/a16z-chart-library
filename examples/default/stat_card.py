@@ -1,4 +1,4 @@
-"""Stat card example — default theme."""
+"""Stat card example — default theme (Plotly defaults)."""
 
 import os
 import sys

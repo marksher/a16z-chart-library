@@ -17,7 +17,7 @@ from ..themes.base import load_theme
 def big_number(
     value: Union[str, int, float],
     label: str = "",
-    theme="default",
+    theme="news",
     width: int = 250,
     height: int = 150,
 ) -> go.Figure:
@@ -28,7 +28,7 @@ def big_number(
     ----------
     value  : the number or text to display prominently
     label  : optional label below the value
-    theme  : 'default' | path to YAML | Theme object | None
+    theme  : 'news' | path to YAML | Theme object | None
     width  : figure width in pixels
     height : figure height in pixels
 

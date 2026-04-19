@@ -38,7 +38,7 @@ def sparkline_line(
     x: str,
     y: Union[str, list],
     end_dot: bool = True,
-    theme="default",
+    theme="news",
     width: int = 200,
     height: int = 60,
 ) -> go.Figure:
@@ -51,7 +51,7 @@ def sparkline_line(
     x        : column name for x-axis values (not displayed)
     y        : column name or list of names for the line(s)
     end_dot  : show a filled dot at the last data point
-    theme    : 'default' | path to YAML | Theme object | None
+    theme    : 'news' | path to YAML | Theme object | None
     """
     df = pd.DataFrame(data) if not isinstance(data, pd.DataFrame) else data.copy()
     if df.empty:
@@ -87,7 +87,7 @@ def sparkline_area(
     x: str,
     y: Union[str, list],
     opacity: float = 0.6,
-    theme="default",
+    theme="news",
     width: int = 200,
     height: int = 60,
 ) -> go.Figure:
@@ -100,7 +100,7 @@ def sparkline_area(
     x       : column name for x-axis values (not displayed)
     y       : column name or list of names for the area(s)
     opacity : fill opacity (0–1)
-    theme   : 'default' | path to YAML | Theme object | None
+    theme   : 'news' | path to YAML | Theme object | None
     """
     df = pd.DataFrame(data) if not isinstance(data, pd.DataFrame) else data.copy()
     if df.empty:
@@ -132,7 +132,7 @@ def sparkline_bar(
     data,
     x: str,
     y: Union[str, list],
-    theme="default",
+    theme="news",
     width: int = 200,
     height: int = 60,
 ) -> go.Figure:
@@ -144,7 +144,7 @@ def sparkline_bar(
     data  : pd.DataFrame or list-of-dicts
     x     : column name for x-axis values (not displayed)
     y     : column name or list of names for the bar(s)
-    theme : 'default' | path to YAML | Theme object | None
+    theme : 'news' | path to YAML | Theme object | None
     """
     df = pd.DataFrame(data) if not isinstance(data, pd.DataFrame) else data.copy()
     if df.empty:

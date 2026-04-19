@@ -17,7 +17,7 @@ from ..themes.base import load_theme
 def stat_card(
     value: Union[str, int, float],
     label: str = "",
-    theme="default",
+    theme="news",
     width: int = 300,
     height: int = 200,
 ) -> go.Figure:
@@ -28,7 +28,7 @@ def stat_card(
     ----------
     value  : the number or text to display prominently
     label  : header banner text (e.g. "Caregivers", "Active Users")
-    theme  : 'default' | path to YAML | Theme object | None
+    theme  : 'news' | path to YAML | Theme object | None
     width  : figure width in pixels
     height : figure height in pixels
 

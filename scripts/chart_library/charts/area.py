@@ -20,7 +20,7 @@ def area(
     subtitle: str = None,
     source: str = None,
     stacked: bool = True,
-    theme="default",
+    theme="news",
     width: int = 900,
     height: int = 560,
 ) -> go.Figure:
@@ -33,7 +33,7 @@ def area(
     x       : column name for x-axis
     y       : column name (single) or list of series names (stacked)
     stacked : True = stacked area; False = overlapping fills to zero
-    theme   : 'default' | path to YAML | Theme object | None
+    theme   : 'news' | path to YAML | Theme object | None
 
     Returns
     -------

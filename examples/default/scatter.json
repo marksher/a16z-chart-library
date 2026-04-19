@@ -6,7 +6,7 @@
   "source": "OpenRouter",
   "color_col": "type",
   "label_col": "model",
-  "theme": "a16z-news",
+  "theme": null,
   "width": 900,
   "height": 580
 }
