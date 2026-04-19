@@ -1,4 +1,22 @@
 {
+  "data": {
+    "category": [
+      "Foundation Models",
+      "Developer Tooling",
+      "Enterprise AI",
+      "Consumer AI",
+      "AI Infrastructure",
+      "Other"
+    ],
+    "share": [
+      38,
+      22,
+      18,
+      12,
+      7,
+      3
+    ]
+  },
   "labels": "category",
   "values": "share",
   "title": "AI Investment by Category",

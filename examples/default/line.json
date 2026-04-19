@@ -1,6 +1,41 @@
 {
+  "data": {
+    "date": [
+      "Nov'22",
+      "Mar'23",
+      "Jul'23",
+      "Nov'23",
+      "Mar'24",
+      "Jul'24",
+      "Nov'24",
+      "Mar'25"
+    ],
+    "Proprietary": [
+      10,
+      15,
+      22,
+      32,
+      42,
+      52,
+      65,
+      80
+    ],
+    "Open Weight": [
+      4,
+      8,
+      14,
+      22,
+      34,
+      46,
+      60,
+      76
+    ]
+  },
   "x": "date",
-  "y": ["Proprietary", "Open Weight"],
+  "y": [
+    "Proprietary",
+    "Open Weight"
+  ],
   "title": "Open Weight Models Are (Very) Close",
   "subtitle": "SOTA Proprietary models score higher, but Open Weight models keep narrowing the gap",
   "source": "Artificial Analysis (2/17/26); Artificial Analysis Intelligence Index v4.0",

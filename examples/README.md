@@ -97,13 +97,18 @@ Paste the returned string into your HTML `<body>`. Add one `<script src="https:/
 
 ## JSON config per chart
 
-Each example has a companion `.json` file containing all chart display parameters.
-`make_fig()` loads it at call time — the Python file only holds the data definition.
+Each example has a companion `.json` file containing both the data and display parameters.
+`make_fig()` loads it at call time — the Python file is just a thin wrapper.
 
 ```json
 {
+  "data": {
+    "year": ["2018", "2019", "2020", "2021", "2022", "2023", "2024", "2025E", "2026E"],
+    "Microsoft": [25, 30, 35, 45, 60, 90, 130, 180, 240],
+    "Meta": [10, 12, 15, 20, 28, 40, 55, 80, 110]
+  },
   "x": "year",
-  "y": ["Microsoft", "Meta", "Alphabet", "Amazon", "Oracle"],
+  "y": ["Microsoft", "Meta"],
   "title": "Hyperscaler Capex To The Moon",
   "subtitle": "Combined capital expenditures expected to top $650 billion in 2026",
   "source": "Bloomberg",

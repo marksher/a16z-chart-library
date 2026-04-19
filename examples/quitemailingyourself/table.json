@@ -1,12 +1,54 @@
 {
-    "title": "SaaS AI Feature Pricing & Packaging Shifts",
-    "subtitle": "March 2024 \u2013 November 2025",
-    "source": "Public pricing pages",
-    "highlight_rows": [
-        0,
-        2,
-        4
+  "data": {
+    "Company": [
+      "Salesforce",
+      "HubSpot",
+      "Zendesk",
+      "Intercom",
+      "Notion",
+      "GitHub",
+      "Slack",
+      "Zoom"
     ],
-    "theme": "quitemailingyourself",
-    "width": 860
+    "AI Packaging": [
+      "Add-on > core",
+      "Core",
+      "Add-on",
+      "Core",
+      "Add-on > core",
+      "Core",
+      "Core",
+      "Add-on"
+    ],
+    "Billing Model": [
+      "Subscription > hybrid",
+      "Hybrid",
+      "Usage",
+      "Hybrid",
+      "Subscription",
+      "Subscription",
+      "Subscription",
+      "Subscription"
+    ],
+    "Status": [
+      "Updated",
+      "Stable",
+      "Updated",
+      "Stable",
+      "Updated",
+      "Stable",
+      "Stable",
+      "Stable"
+    ]
+  },
+  "title": "SaaS AI Feature Pricing & Packaging Shifts",
+  "subtitle": "March 2024 \u2013 November 2025",
+  "source": "Public pricing pages",
+  "highlight_rows": [
+    0,
+    2,
+    4
+  ],
+  "theme": "quitemailingyourself",
+  "width": 860
 }

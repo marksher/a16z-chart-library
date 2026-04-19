@@ -1,15 +1,11 @@
 """Gauge example — quitemailingyourself theme."""
 
-import os
-import sys
+import os, sys, json
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../..", "scripts"))
 
-import json
 from chart_library import gauge, save_png, save_svg
 
 OUT = os.path.dirname(__file__)
-
-
 _CFG = os.path.join(os.path.dirname(__file__), "gauge.json")
 
 
@@ -24,4 +20,4 @@ if __name__ == "__main__":
     save_png(fig, os.path.join(OUT, "gauge.png"))
     save_svg(fig, os.path.join(OUT, "gauge.svg"))
     fig.write_html(os.path.join(OUT, "gauge.html"))
-    print("gauge.png + gauge.svg written")
+    print("gauge.png written")

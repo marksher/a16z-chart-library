@@ -1,4 +1,40 @@
 {
+  "data": {
+    "country": [
+      "USA",
+      "CHN",
+      "GBR",
+      "IND",
+      "DEU",
+      "ISR",
+      "FRA",
+      "CAN",
+      "SGP",
+      "AUS",
+      "JPN",
+      "KOR",
+      "SWE",
+      "NLD",
+      "BRA"
+    ],
+    "investment_b": [
+      120,
+      55,
+      18,
+      15,
+      12,
+      10,
+      9,
+      8,
+      7,
+      6,
+      5,
+      4,
+      4,
+      3,
+      3
+    ]
+  },
   "locations": "country",
   "values": "investment_b",
   "location_mode": "ISO-3",

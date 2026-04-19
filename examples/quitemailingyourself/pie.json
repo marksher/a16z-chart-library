@@ -1,11 +1,29 @@
 {
-    "labels": "category",
-    "values": "share",
-    "title": "AI Investment by Category",
-    "subtitle": "Percentage of total venture investment, 2025",
-    "source": "PitchBook",
-    "hole": 0.55,
-    "theme": "quitemailingyourself",
-    "width": 700,
-    "height": 520
+  "data": {
+    "category": [
+      "Foundation Models",
+      "Developer Tooling",
+      "Enterprise AI",
+      "Consumer AI",
+      "AI Infrastructure",
+      "Other"
+    ],
+    "share": [
+      38,
+      22,
+      18,
+      12,
+      7,
+      3
+    ]
+  },
+  "labels": "category",
+  "values": "share",
+  "title": "AI Investment by Category",
+  "subtitle": "Percentage of total venture investment, 2025",
+  "source": "PitchBook",
+  "hole": 0.55,
+  "theme": "quitemailingyourself",
+  "width": 700,
+  "height": 520
 }

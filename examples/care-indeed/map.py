@@ -1,24 +1,20 @@
-"""Map chart example — care-indeed theme."""
+"""Map example — care-indeed theme."""
 
-import os
-import sys
+import os, sys, json
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../..", "scripts"))
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../default"))
 
-import json
-import map as _src
+import pandas as pd
 from chart_library import map_chart, save_png, save_svg
 
 OUT = os.path.dirname(__file__)
-
-
 _CFG = os.path.join(os.path.dirname(__file__), "map.json")
 
 
 def make_fig(cfg_path=_CFG):
     with open(cfg_path) as f:
         cfg = json.load(f)
-    return map_chart(_src._df, **cfg)
+    df = pd.DataFrame(cfg.pop("data"))
+    return map_chart(df, **cfg)
 
 
 if __name__ == "__main__":
@@ -26,4 +22,4 @@ if __name__ == "__main__":
     save_png(fig, os.path.join(OUT, "map.png"))
     save_svg(fig, os.path.join(OUT, "map.svg"))
     fig.write_html(os.path.join(OUT, "map.html"))
-    print("map.png + map.svg written")
+    print("map.png written")

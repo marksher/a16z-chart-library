@@ -1,31 +1,20 @@
-"""Sparkline line example — default theme."""
+"""SparklineLine example — news theme."""
 
-import os
-import sys
+import os, sys, json
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../..", "scripts"))
 
-import json
 import pandas as pd
 from chart_library import sparkline_line, save_png, save_svg
 
 OUT = os.path.dirname(__file__)
-
-# Monthly AI model usage index (Jan–Dec 2025)
-_df = pd.DataFrame({
-    "month": list(range(1, 13)),
-    "GPT-4o":    [100, 108, 119, 132, 148, 163, 175, 184, 196, 210, 228, 245],
-    "Claude":    [42,  51,  63,  78,  95,  115, 138, 162, 183, 201, 220, 242],
-    "Gemini":    [38,  44,  50,  59,  70,  82,  95,  108, 119, 128, 138, 150],
-})
-
-
 _CFG = os.path.join(os.path.dirname(__file__), "sparkline_line.json")
 
 
 def make_fig(cfg_path=_CFG):
     with open(cfg_path) as f:
         cfg = json.load(f)
-    return sparkline_line(_df, **cfg)
+    df = pd.DataFrame(cfg.pop("data"))
+    return sparkline_line(df, **cfg)
 
 
 if __name__ == "__main__":
@@ -33,4 +22,4 @@ if __name__ == "__main__":
     save_png(fig, os.path.join(OUT, "sparkline_line.png"))
     save_svg(fig, os.path.join(OUT, "sparkline_line.svg"))
     fig.write_html(os.path.join(OUT, "sparkline_line.html"))
-    print("sparkline_line.png + sparkline_line.svg written")
+    print("sparkline_line.png written")

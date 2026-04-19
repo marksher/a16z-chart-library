@@ -1,15 +1,11 @@
-"""Stat Card example — quitemailingyourself theme."""
+"""StatCard example — quitemailingyourself theme."""
 
-import os
-import sys
+import os, sys, json
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../..", "scripts"))
 
-import json
 from chart_library import stat_card, save_png, save_svg
 
 OUT = os.path.dirname(__file__)
-
-
 _CFG = os.path.join(os.path.dirname(__file__), "stat_card.json")
 
 
@@ -24,4 +20,4 @@ if __name__ == "__main__":
     save_png(fig, os.path.join(OUT, "stat_card.png"))
     save_svg(fig, os.path.join(OUT, "stat_card.svg"))
     fig.write_html(os.path.join(OUT, "stat_card.html"))
-    print("stat_card.png + stat_card.svg written")
+    print("stat_card.png written")

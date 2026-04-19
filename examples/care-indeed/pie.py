@@ -1,24 +1,20 @@
-"""Pie / donut chart example — care-indeed theme."""
+"""Pie example — care-indeed theme."""
 
-import os
-import sys
+import os, sys, json
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../..", "scripts"))
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../default"))
 
-import json
-import pie as _src
+import pandas as pd
 from chart_library import pie, save_png, save_svg
 
 OUT = os.path.dirname(__file__)
-
-
 _CFG = os.path.join(os.path.dirname(__file__), "pie.json")
 
 
 def make_fig(cfg_path=_CFG):
     with open(cfg_path) as f:
         cfg = json.load(f)
-    return pie(_src._df, **cfg)
+    df = pd.DataFrame(cfg.pop("data"))
+    return pie(df, **cfg)
 
 
 if __name__ == "__main__":
@@ -26,4 +22,4 @@ if __name__ == "__main__":
     save_png(fig, os.path.join(OUT, "pie.png"))
     save_svg(fig, os.path.join(OUT, "pie.svg"))
     fig.write_html(os.path.join(OUT, "pie.html"))
-    print("pie.png + pie.svg written")
+    print("pie.png written")
